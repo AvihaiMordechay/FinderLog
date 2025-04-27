@@ -5,25 +5,24 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ReportsActivity">
-
+    tools:context=".LostActivity">
 
     <TextView
-        android:id="@+id/textViewReports"
+        android:id="@+id/textViewLost"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        android:text="Reports Screen"
+        android:text="Lost Screen"
         android:textSize="24sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewReports" />
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewLost" />
 
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationViewReports"
+        android:id="@+id/bottomNavigationViewLost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
@@ -33,5 +32,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

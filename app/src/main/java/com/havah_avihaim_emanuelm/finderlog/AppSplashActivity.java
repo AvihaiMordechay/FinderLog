@@ -30,7 +30,7 @@ public class AppSplashActivity extends AppCompatActivity {
                 timer--;
                 runOnUiThread(() -> txvAppStart.setText(String.format("app will start in %d sec", timer)));
             }
-            startActivity(new Intent(AppSplashActivity.this, MainActivity.class));
+            startActivity(new Intent(AppSplashActivity.this, BaseActivity.class));
             finish(); // dont push this activity to stack
         }).start();
     }
