@@ -8,33 +8,34 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public abstract class MainActivity extends AppCompatActivity {
+    protected void setupBottomNavigation(BottomNavigationView bottomNavigationView, int currentItemId) {
+        bottomNavigationView.setSelectedItemId(currentItemId);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navbar);
-
-        bottomNav.setOnItemSelectedListener(item -> {
+        bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.nav_lost) {
-                startActivity(new Intent(this, LostItemsActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_matches) {
-                startActivity(new Intent(this, MatchesActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_found) {
-                startActivity(new Intent(this, FoundItemsActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_reports) {
-                startActivity(new Intent(this, ReportsActivity.class));
+            if (itemId == currentItemId) {
                 return true;
             }
-            return false;
-        });
 
+            Class<?> targetActivity = null;
+            if (itemId == R.id.nav_matches) {
+                targetActivity = MatchesActivity.class;
+            } else if (itemId == R.id.nav_lost) {
+                targetActivity = LostItemsActivity.class;
+            }else if(itemId == R.id.nav_found){
+                targetActivity = FoundItemsActivity.class;
+            }else if(itemId == R.id.nav_reports){
+                targetActivity = ReportsActivity.class;
+            }
+
+            if (targetActivity != null) {
+                startActivity(new Intent(this, targetActivity));
+                overridePendingTransition(0, 0);
+                finish();
+            }
+            return true;
+        });
     }
+
 }
