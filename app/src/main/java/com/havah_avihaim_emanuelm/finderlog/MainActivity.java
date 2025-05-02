@@ -9,9 +9,14 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.material.navigation.NavigationView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.havah_avihaim_emanuelm.finderlog.model.FoundItem;
+import com.havah_avihaim_emanuelm.finderlog.model.Item;
+
+import java.util.Date;
 
 public class MainActivity extends BaseActivity {
     private DrawerLayout drawerLayout;
