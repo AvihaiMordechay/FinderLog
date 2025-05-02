@@ -1,4 +1,4 @@
-package com.havah_avihaim_emanuelm.finderlog.model;
+package com.havah_avihaim_emanuelm.finderlog.firebase.firestore;
 
 import java.util.Date;
 

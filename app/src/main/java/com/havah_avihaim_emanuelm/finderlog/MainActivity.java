@@ -13,8 +13,9 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.navigation.NavigationView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.havah_avihaim_emanuelm.finderlog.model.FoundItem;
-import com.havah_avihaim_emanuelm.finderlog.model.Item;
+import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
+import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
+import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
 
 import java.util.Date;
 
