@@ -7,7 +7,7 @@ android:layout_height="match_parent"
 android:orientation="vertical"
 android:gravity="center"
 android:background="@drawable/ic_launcher_background"
-tools:context=".AppSplashActivity">
+tools:context=".activities.AppSplashActivity">
 
 <TextView
     android:id="@+id/textView2"

@@ -1,9 +1,10 @@
-package com.havah_avihaim_emanuelm.finderlog;
+package com.havah_avihaim_emanuelm.finderlog.activities;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.havah_avihaim_emanuelm.finderlog.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
     protected void setupBottomNavigation(BottomNavigationView bottomNavigationView, int currentItemId) {

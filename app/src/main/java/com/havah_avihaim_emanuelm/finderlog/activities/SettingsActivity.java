@@ -1,4 +1,4 @@
-package com.havah_avihaim_emanuelm.finderlog;
+package com.havah_avihaim_emanuelm.finderlog.activities;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.havah_avihaim_emanuelm.finderlog.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

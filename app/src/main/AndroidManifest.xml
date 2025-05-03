@@ -13,19 +13,19 @@
         android:theme="@style/Theme.FinderLog"
         tools:targetApi="31">
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".MatchesActivity"
+            android:name=".activities.MatchesActivity"
             android:exported="false" />
         <activity
-            android:name=".FoundActivity"
+            android:name=".activities.FoundActivity"
             android:exported="false" />
         <activity
-            android:name=".LostActivity"
+            android:name=".activities.LostActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AppSplashActivity"
+            android:name=".activities.AppSplashActivity"
             android:exported="false" />
     </application>
 

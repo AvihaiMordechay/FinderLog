@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class LostItem implements Item{
     private String id;
-
     private String clientName;
     private String clientPhone;
     private String description;
