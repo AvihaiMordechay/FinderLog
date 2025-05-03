@@ -17,47 +17,35 @@ public class StorageService {
     private final StorageReference rootRef = storage.getReference();
 
     // Upload a file with a random generated path (e.g. uploads/uuid.jpg)
-    public void uploadFile(Uri fileUri) {
+    public void uploadFile(Uri fileUri, UploadCallback callback) {
         String extension = getFileExtension(String.valueOf(fileUri));
         String randomPath = "uploads/" + UUID.randomUUID().toString() + "." + extension;
         StorageReference fileRef = rootRef.child(randomPath);
 
-        UploadTask uploadTask = fileRef.putFile(fileUri);
-        uploadTask
+        fileRef.putFile(fileUri)
                 .addOnSuccessListener(taskSnapshot ->
                         fileRef.getDownloadUrl()
-                                .addOnSuccessListener(uri -> onUploadSuccess(uri.toString(), randomPath))
-                                .addOnFailureListener(this::onUploadFailure))
-                .addOnFailureListener(this::onUploadFailure);
+                                .addOnSuccessListener(uri -> callback.onComplete(randomPath))
+                                .addOnFailureListener(e -> callback.onComplete(null)))
+                .addOnFailureListener(e -> callback.onComplete(null));
     }
 
 
     // Delete a file at a given path
-    public void deleteFile(String storagePath) {
+    public void deleteFile(String storagePath, DeleteCallback callback) {
         StorageReference fileRef = rootRef.child(storagePath);
 
         fileRef.delete()
-                .addOnSuccessListener(aVoid -> onDeleteSuccess("File deleted: " + storagePath))
-                .addOnFailureListener(this::onDeleteFailure);
+                .addOnSuccessListener(aVoid -> callback.onComplete(true))
+                .addOnFailureListener(e -> callback.onComplete(false));
     }
 
-    // Called when upload succeeds
-    private void onUploadSuccess(String downloadUrl, String storagePath) {
-        Log.d("StorageService", "Upload successful: " + storagePath + " | URL: " + downloadUrl);
-    }
 
-    // Called when upload fails
-    private void onUploadFailure(Exception e) {
-        Log.e("StorageService", "Upload failed", e);
+    public interface UploadCallback {
+        void onComplete(String downloadUrl);
     }
-
-    // Called when deletion succeeds
-    private void onDeleteSuccess(String message) {
-        Log.d("StorageService", message);
-    }
-
-    // Called when deletion fails
-    private void onDeleteFailure(Exception e) {
-        Log.e("StorageService", "Deletion failed", e);
+    public interface DeleteCallback {
+        void onComplete(boolean success);
     }
 }
+

@@ -4,31 +4,22 @@ import java.util.Date;
 
 public class FoundItem implements Item{
     private String id;
-    private String createdBy;
     private String description;
     private String imgPath;
+    private String imgType;
     private String status;
     private String title;
     private Date foundDate;
 
-    public FoundItem(String id, String createdBy, String description, String imgPath,
-                     String status, String title, Date foundDate)  {
-        this.id = id;
-        this.createdBy = createdBy;
-        this.description = description;
-        this.imgPath = imgPath;
-        this.status = status;
+    public FoundItem(String title, String imgPath,String imgType)  {
         this.title = title;
-        this.foundDate = foundDate;
+        this.imgPath = imgPath;
+        this.imgType = imgType;
+//        this.id = TODO: Generate
+        this.status = "open";
+        this.foundDate = new Date();
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
 
     @Override
     public String getDescription() {
@@ -43,9 +34,6 @@ public class FoundItem implements Item{
         return imgPath;
     }
 
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
-    }
 
     @Override
     public String getStatus() {
@@ -61,20 +49,19 @@ public class FoundItem implements Item{
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public Date getFoundDate() {
         return foundDate;
     }
 
-    public void setFoundDate(Date foundDate) {
-        this.foundDate = foundDate;
-    }
 
     @Override
     public String getId() {
         return id;
     }
+
+    public String getImgType() {
+        return imgType;
+    }
+
 }
