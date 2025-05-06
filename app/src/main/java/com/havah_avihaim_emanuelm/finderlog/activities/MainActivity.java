@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,6 +19,7 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
@@ -70,6 +72,8 @@ public class MainActivity extends BaseActivity {
         // Upload button click
         View uploadButton = findViewById(R.id.uploadButton);
         uploadButton.setOnClickListener(v -> uploadImageFromGallery());
+
+        showImageFromUrl("https://firebasestorage.googleapis.com/v0/b/finderlog-1f757.firebasestorage.app/o/uploads%2Fd64ab902-af62-4059-a434-d1718be44717.?alt=media&token=b3d43cff-2ef1-499a-b4c4-e82e1ac638f0");
     }
 
     /**
@@ -131,5 +135,16 @@ public class MainActivity extends BaseActivity {
             Toast.makeText(this, "Failed to read image info", Toast.LENGTH_SHORT).show();
         }
     }
+
+    // Example
+    private void showImageFromUrl(String imageUrl) {
+        ImageView imageView = findViewById(R.id.imageViewPreview);
+        Glide.with(this)
+                .load(imageUrl)
+//                .placeholder(R.drawable.placeholder) // Show temp image until the loading finish (need to save image as placeholder.png)
+//                .error(R.drawable.error_image)       // In case that we have error with the image (need to save image as error_image.png)
+                .into(imageView);
+    }
+
 
 }

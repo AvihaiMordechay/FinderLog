@@ -25,7 +25,7 @@ public class StorageService {
         fileRef.putFile(fileUri)
                 .addOnSuccessListener(taskSnapshot ->
                         fileRef.getDownloadUrl()
-                                .addOnSuccessListener(uri -> callback.onComplete(randomPath))
+                                .addOnSuccessListener(uri -> callback.onComplete(uri.toString()))
                                 .addOnFailureListener(e -> callback.onComplete(null)))
                 .addOnFailureListener(e -> callback.onComplete(null));
     }
