@@ -1,7 +1,7 @@
 package com.havah_avihaim_emanuelm.finderlog.activities;
 
+import android.Manifest;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,8 +9,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.content.pm.PackageManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -18,8 +19,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.camera.view.PreviewView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
@@ -27,9 +30,21 @@ import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.LostItem;
+import com.havah_avihaim_emanuelm.finderlog.camera.CameraHelper;
+import com.havah_avihaim_emanuelm.finderlog.camera.GalleryHelper;
+
+
 
 public class MainActivity extends BaseActivity {
     private DrawerLayout drawerLayout;
+    private static final int REQUEST_CODE_PERMISSIONS = 10;
+    private static final String[] REQUIRED_PERMISSIONS = new String[]{
+            Manifest.permission.CAMERA
+    };
+    private CameraHelper cameraHelper;
+    private PreviewView previewView;
+
+    private GalleryHelper galleryHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +58,7 @@ public class MainActivity extends BaseActivity {
         if (!Repositories.getLostRepo().isLoaded()) {
             new FirestoreService().getItems(LostItem.class, Repositories.getLostRepo()::setItems);
         }
-
-
+        galleryHelper = new GalleryHelper(this,storageService);
         // UI setup
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewReports);
         setupBottomNavigation(bottomNavigationView, R.id.nav_reports);
@@ -82,7 +96,48 @@ public class MainActivity extends BaseActivity {
         View uploadButton = findViewById(R.id.uploadButton);
         uploadButton.setOnClickListener(v -> uploadImageFromGallery());
 
-        showImageFromUrl("https://firebasestorage.googleapis.com/v0/b/finderlog-1f757.firebasestorage.app/o/uploads%2Fd64ab902-af62-4059-a434-d1718be44717.?alt=media&token=b3d43cff-2ef1-499a-b4c4-e82e1ac638f0");
+//        showImageFromUrl("https://firebasestorage.googleapis.com/v0/b/finderlog-1f757.firebasestorage.app/o/uploads%2Fd64ab902-af62-4059-a434-d1718be44717.?alt=media&token=b3d43cff-2ef1-499a-b4c4-e82e1ac638f0");
+
+        // camera opening code:
+        previewView = findViewById(R.id.previewView);
+        // Initialize CameraHelper
+        cameraHelper = new CameraHelper(this, previewView);
+
+        Button btnOpenCamera = findViewById(R.id.btnOpenCamera);
+        Button btnCapture = findViewById(R.id.btnCapture);
+        ImageButton btnCloseCamera = findViewById(R.id.btnCloseCamera);
+        // Initially hide preview and capture button
+        previewView.setVisibility(View.GONE);
+        btnCapture.setVisibility(View.GONE);
+
+        btnOpenCamera.setOnClickListener(v -> {
+            // Request permissions if not granted
+            if (allPermissionsGranted()) {
+                cameraHelper.startCamera();
+                previewView.setVisibility(View.VISIBLE);
+                btnCapture.setVisibility(View.VISIBLE);
+                btnCloseCamera.setVisibility(View.VISIBLE);
+                btnOpenCamera.setVisibility(View.GONE);
+                uploadButton.setVisibility(View.GONE);
+            } else {
+                ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
+            }
+        });
+
+        // Capture button click listener
+        btnCapture.setOnClickListener(v -> cameraHelper.takePhoto());
+
+
+        btnCloseCamera.setOnClickListener(v -> {
+//            cameraHelper.stopCamera();
+            previewView.setVisibility(View.GONE);
+            btnCapture.setVisibility(View.GONE);
+            btnCloseCamera.setVisibility(View.GONE);
+            btnOpenCamera.setVisibility(View.VISIBLE);
+            uploadButton.setVisibility(View.VISIBLE);
+        });
+        // end
+
     }
 
     /**
@@ -101,58 +156,28 @@ public class MainActivity extends BaseActivity {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     if (imageUri != null) {
-                        handleSelectedImage(imageUri);
+                        galleryHelper.handleSelectedImage(imageUri);
                     }
                 }
             });
 
-    /**
-     * Reads image metadata from selected URI using content provider.
-     */
-    private void handleSelectedImage(Uri imageUri) {
-        try (Cursor cursor = getContentResolver().query(
-                imageUri,
-                new String[]{
-                        MediaStore.Images.Media.SIZE,
-                        MediaStore.Images.Media.MIME_TYPE,
-                        MediaStore.Images.Media.WIDTH,
-                        MediaStore.Images.Media.HEIGHT,
-                },
-                null, null, null
-        )) {
-            if (cursor != null && cursor.moveToFirst()) {
-                // For checking the img size before uploading the image to the cloud. (limit to 3 mb?)
-                long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE));
-                // For saving the image in the cloud.
-                String mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE));
-
-                if (size < 3000000) {
-                    storageService.uploadFile(imageUri, storagePath -> {
-                        if (storagePath != null) {
-                            // TODO: SERVICE MACHINE LEARNING IMPLEMENTATION
-                            Log.d("storagePath", storagePath);
-                            FoundItem foundItem = new FoundItem("test", storagePath, mimeType);
-                            firestoreService.addItem(foundItem);
-                        } else {
-                            Log.e("Upload", "Upload failed");
-                        }
-                    });
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to read image info", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     // Example
-    private void showImageFromUrl(String imageUrl) {
-        ImageView imageView = findViewById(R.id.imageViewPreview);
-        Glide.with(this)
-                .load(imageUrl)
-//                .placeholder(R.drawable.placeholder) // Show temp image until the loading finish (need to save image as placeholder.png)
-//                .error(R.drawable.error_image)       // In case that we have error with the image (need to save image as error_image.png)
-                .into(imageView);
+//    private void showImageFromUrl(String imageUrl) {
+//        ImageView imageView = findViewById(R.id.imageViewPreview);
+//        Glide.with(this)
+//                .load(imageUrl)
+////                .placeholder(R.drawable.placeholder) // Show temp image until the loading finish (need to save image as placeholder.png)
+////                .error(R.drawable.error_image)       // In case that we have error with the image (need to save image as error_image.png)
+//                .into(imageView);
+//    }
+
+    // opening the camera code:
+    private boolean allPermissionsGranted() {
+        for (String permission : REQUIRED_PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+        return true;
     }
 
 
