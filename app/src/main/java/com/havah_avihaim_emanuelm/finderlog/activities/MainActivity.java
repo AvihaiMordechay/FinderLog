@@ -23,22 +23,27 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
+import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
-import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
+import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.LostItem;
 
 public class MainActivity extends BaseActivity {
     private DrawerLayout drawerLayout;
-    private FirestoreService firestoreService;
-    private StorageService storageService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firestoreService = new FirestoreService();
-        storageService = new StorageService();
+        if (!Repositories.getFoundRepo().isLoaded()) {
+            Log.d("YourTag", "Your message here found repo");
+            new FirestoreService().getItems(FoundItem.class, Repositories.getFoundRepo()::setItems);
+        }
+        if (!Repositories.getLostRepo().isLoaded()) {
+            new FirestoreService().getItems(LostItem.class, Repositories.getLostRepo()::setItems);
+        }
+
 
         // UI setup
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewReports);
@@ -52,13 +57,17 @@ public class MainActivity extends BaseActivity {
         WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setStatusBarColor(Color.TRANSPARENT);
 
+//        WindowInsetsControllerCompat insetsController =
+//                WindowCompat.getInsetsController(window, window.getDecorView());
+//        insetsController.setAppearanceLightStatusBars(true);
+
         toolbar.setNavigationIcon(R.drawable.dots);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         // Drawer item handling
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_about) {
+            if(id == R.id.nav_about) {
                 // About action
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));

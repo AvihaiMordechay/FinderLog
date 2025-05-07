@@ -2,8 +2,16 @@ package com.havah_avihaim_emanuelm.finderlog.activities;
 
 import android.os.Bundle;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
+import com.havah_avihaim_emanuelm.finderlog.adapters.ItemAdapter;
+import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
+import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
+
+import java.util.List;
 
 public class LostActivity extends BaseActivity {
 
@@ -15,6 +23,13 @@ public class LostActivity extends BaseActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewLost);
         setupBottomNavigation(bottomNavigationView, R.id.nav_lost);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewLost);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        List<Item> lostItems = Repositories.getLostRepo().getCachedItems();
+        recyclerView.setAdapter(new ItemAdapter(lostItems));
 
     }
 }

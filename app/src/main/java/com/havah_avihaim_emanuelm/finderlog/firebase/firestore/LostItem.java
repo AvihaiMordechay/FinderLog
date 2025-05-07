@@ -12,6 +12,8 @@ public class LostItem implements Item{
     private Date lostDate;
     private Date reportDate;
 
+    public LostItem() {
+    }
     public LostItem(String id, String clientName, String clientPhone, String description,
                     String status, String title, Date lostDate, Date reportDate) {
         this.id = id;

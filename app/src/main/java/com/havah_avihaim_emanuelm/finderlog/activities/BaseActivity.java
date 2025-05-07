@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
+import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
+import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    protected static final FirestoreService firestoreService = new FirestoreService();
+    protected static final StorageService storageService = new StorageService();
     protected void setupBottomNavigation(BottomNavigationView bottomNavigationView, int currentItemId) {
         bottomNavigationView.setSelectedItemId(currentItemId);
 

@@ -11,6 +11,9 @@ public class FoundItem implements Item{
     private String title;
     private Date foundDate;
 
+    public FoundItem() {
+    }
+
     public FoundItem(String title, String imgPath,String imgType)  {
         this.title = title;
         this.imgPath = imgPath;
