@@ -5,9 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
+import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
 
@@ -45,7 +47,11 @@ public class GalleryHelper {
                         if (storagePath != null) {
                             // Save to Firestore or other actions
                             // TODO: SERVICE MACHINE LEARNING IMPLEMENTATION
-                            machineLearningService.analyzeImageFromFirebaseStorage(storagePath);
+                            machineLearningService.analyzeImageFromFirebaseStorage(storagePath, labels -> {
+
+//                                TODO: GET TITLE FROM THE USER.
+                                firestoreService.addItem(new FoundItem("TEST", storagePath, mimeType, labels));
+                            });
                         } else {
                             Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show();
                         }

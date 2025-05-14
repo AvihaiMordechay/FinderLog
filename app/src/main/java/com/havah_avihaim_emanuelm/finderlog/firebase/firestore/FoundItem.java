@@ -1,8 +1,9 @@
 package com.havah_avihaim_emanuelm.finderlog.firebase.firestore;
 
 import java.util.Date;
+import java.util.List;
 
-public class FoundItem implements Item{
+public class FoundItem implements Item {
     private String id;
     private String description;
     private String imgPath;
@@ -11,16 +12,15 @@ public class FoundItem implements Item{
     private String title;
     private Date foundDate;
 
-    public FoundItem() {
-    }
-
-    public FoundItem(String title, String imgPath,String imgType)  {
+    public FoundItem() {};
+    public FoundItem(String title, String imgPath, String imgType, String description) {
         this.title = title;
         this.imgPath = imgPath;
         this.imgType = imgType;
 //        this.id = TODO: Generate
         this.status = "open";
         this.foundDate = new Date();
+        this.description = description;
     }
 
 

@@ -23,6 +23,7 @@
             db.collection(collection)
                     .get()
                     .addOnSuccessListener(querySnapshot -> {
+
                         List<Item> items = new ArrayList<>();
                         for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                             items.add(doc.toObject(clazz));

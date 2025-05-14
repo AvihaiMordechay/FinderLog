@@ -27,7 +27,7 @@ public class MachineLearningService {
      *
      * @param imageUri Firebase Storage URI (e.g., gs://... or https://...)
      */
-    public void analyzeImageFromFirebaseStorage(String imageUri) {
+    public void analyzeImageFromFirebaseStorage(String imageUri, LabelingCallback callback) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl(imageUri);
 
@@ -35,7 +35,7 @@ public class MachineLearningService {
         storageRef.getBytes(5 * 1024 * 1024)
                 .addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    runImageLabeling(bitmap);
+                    runImageLabeling(bitmap, callback);
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to download image: " + e.getMessage()));
     }
@@ -45,7 +45,7 @@ public class MachineLearningService {
      *
      * @param bitmap the image to analyze
      */
-    private void runImageLabeling(Bitmap bitmap) {
+    private void runImageLabeling(Bitmap bitmap, LabelingCallback callback) {
         try {
             // Convert Bitmap to ML Kit's InputImage
             InputImage image = InputImage.fromBitmap(bitmap, 0);
@@ -56,17 +56,30 @@ public class MachineLearningService {
             // Process the image and handle the results
             labeler.process(image)
                     .addOnSuccessListener(labels -> {
-                        for (ImageLabel label : labels) {
-                            String text = label.getText();
-                            float confidence = label.getConfidence();
-                            int index = label.getIndex();
-                            Log.d(TAG, "Label: " + text + ", Confidence: " + confidence);
+                        StringBuilder stringLabels = new StringBuilder();
+
+                        for (int i = 0; i < labels.size(); i++) {
+                            Log.i("t", String.valueOf((labels.get(i).getConfidence() > 0.6)));
+                            if (labels.get(i).getConfidence() > 0.6) {
+                                stringLabels.append(labels.get(i).getText()).append(", ");
+                            }
+                            Log.d(TAG, "Label: " + labels.get(i).getText() + ", Confidence: " + labels.get(i).getConfidence());
                         }
+
+                        callback.onLabelsReady(stringLabels.toString());
                     })
-                    .addOnFailureListener(e -> Log.e(TAG, "Image labeling failed: " + e.getMessage()));
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Image labeling failed: " + e.getMessage());
+                        callback.onLabelsReady(null);
+                    });
 
         } catch (Exception e) {
             Log.e(TAG, "Failed to create InputImage: " + e.getMessage());
+            callback.onLabelsReady(null);
         }
+    }
+
+    public interface LabelingCallback {
+        void onLabelsReady(String labels);
     }
 }

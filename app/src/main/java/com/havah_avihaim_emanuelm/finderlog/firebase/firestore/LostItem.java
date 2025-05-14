@@ -1,8 +1,9 @@
 package com.havah_avihaim_emanuelm.finderlog.firebase.firestore;
 
 import java.util.Date;
+import java.util.List;
 
-public class LostItem implements Item{
+public class LostItem implements Item {
     private String id;
     private String clientName;
     private String clientPhone;
@@ -14,6 +15,7 @@ public class LostItem implements Item{
 
     public LostItem() {
     }
+
     public LostItem(String id, String clientName, String clientPhone, String description,
                     String status, String title, Date lostDate, Date reportDate) {
         this.id = id;
@@ -25,6 +27,7 @@ public class LostItem implements Item{
         this.lostDate = lostDate;
         this.reportDate = reportDate;
     }
+
     public String getClientName() {
         return clientName;
     }
@@ -59,7 +62,7 @@ public class LostItem implements Item{
         this.status = status;
     }
 
-@Override
+    @Override
     public String getTitle() {
         return title;
     }
