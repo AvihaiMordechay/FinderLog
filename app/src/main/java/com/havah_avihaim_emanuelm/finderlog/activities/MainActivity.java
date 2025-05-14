@@ -34,7 +34,6 @@ import com.havah_avihaim_emanuelm.finderlog.camera.CameraHelper;
 import com.havah_avihaim_emanuelm.finderlog.camera.GalleryHelper;
 
 
-
 public class MainActivity extends BaseActivity {
     private DrawerLayout drawerLayout;
     private static final int REQUEST_CODE_PERMISSIONS = 10;
@@ -58,7 +57,7 @@ public class MainActivity extends BaseActivity {
         if (!Repositories.getLostRepo().isLoaded()) {
             new FirestoreService().getItems(LostItem.class, Repositories.getLostRepo()::setItems);
         }
-        galleryHelper = new GalleryHelper(this,storageService);
+        galleryHelper = new GalleryHelper(this, storageService, firestoreService, machineLearningService);
         // UI setup
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewReports);
         setupBottomNavigation(bottomNavigationView, R.id.nav_reports);
@@ -81,7 +80,7 @@ public class MainActivity extends BaseActivity {
         // Drawer item handling
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            if(id == R.id.nav_about) {
+            if (id == R.id.nav_about) {
                 // About action
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -101,7 +100,7 @@ public class MainActivity extends BaseActivity {
         // camera opening code:
         previewView = findViewById(R.id.previewView);
         // Initialize CameraHelper
-        cameraHelper = new CameraHelper(this, previewView);
+        cameraHelper = new CameraHelper(this, previewView, storageService, firestoreService, machineLearningService);
 
         Button btnOpenCamera = findViewById(R.id.btnOpenCamera);
         Button btnCapture = findViewById(R.id.btnCapture);
@@ -166,8 +165,9 @@ public class MainActivity extends BaseActivity {
 //        ImageView imageView = findViewById(R.id.imageViewPreview);
 //        Glide.with(this)
 //                .load(imageUrl)
-////                .placeholder(R.drawable.placeholder) // Show temp image until the loading finish (need to save image as placeholder.png)
-////                .error(R.drawable.error_image)       // In case that we have error with the image (need to save image as error_image.png)
+
+    /// /                .placeholder(R.drawable.placeholder) // Show temp image until the loading finish (need to save image as placeholder.png)
+    /// /                .error(R.drawable.error_image)       // In case that we have error with the image (need to save image as error_image.png)
 //                .into(imageView);
 //    }
 

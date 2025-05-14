@@ -9,6 +9,7 @@
     public class FirestoreService {
         private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // TODO: ADD THE ITEM TO THE HAVA'S LISTS!!!!!!!!
         public void addItem(Item item) {
             String collection = getCollectionName(item);
             db.collection(collection)

@@ -7,15 +7,22 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
+import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
 
 public class GalleryHelper {
 
     private Context context;
     private StorageService storageService;
-    public GalleryHelper(Context context ,StorageService storageService) {
+    private FirestoreService firestoreService;
+    private MachineLearningService machineLearningService;
+
+    public GalleryHelper(Context context, StorageService storageService, FirestoreService firestoreService, MachineLearningService machineLearningService) {
         this.context = context;
-        this.storageService=storageService;
+        this.storageService = storageService;
+        this.firestoreService = firestoreService;
+        this.machineLearningService = machineLearningService;
     }
 
     public void handleSelectedImage(Uri imageUri) {
@@ -38,6 +45,7 @@ public class GalleryHelper {
                         if (storagePath != null) {
                             // Save to Firestore or other actions
                             // TODO: SERVICE MACHINE LEARNING IMPLEMENTATION
+                            machineLearningService.analyzeImageFromFirebaseStorage(storagePath);
                         } else {
                             Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show();
                         }
