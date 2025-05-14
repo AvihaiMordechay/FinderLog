@@ -103,7 +103,7 @@ public class CameraHelper {
                         storageService.uploadFile(savedUri, storagePath -> {
                             if (storagePath != null) {
 
-                                machineLearningService.analyzeImageFromFirebaseStorage(savedUri.toString());
+                                machineLearningService.analyzeImageFromFirebaseStorage(storagePath);
                                 // Store image metadata in Fire-store
 //                                firestoreService.addItem(new FoundItem("test", storagePath, "image/jpeg"));
                             } else {
