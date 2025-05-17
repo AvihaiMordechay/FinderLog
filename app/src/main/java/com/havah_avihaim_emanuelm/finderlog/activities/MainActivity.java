@@ -2,6 +2,7 @@ package com.havah_avihaim_emanuelm.finderlog.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +12,14 @@ import android.view.View;
 import android.view.Window;
 import android.content.pm.PackageManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.view.Gravity;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,7 +32,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.havah_avihaim_emanuelm.finderlog.R;
 import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
@@ -32,6 +42,10 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.LostItem;
 import com.havah_avihaim_emanuelm.finderlog.camera.CameraHelper;
 import com.havah_avihaim_emanuelm.finderlog.camera.GalleryHelper;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class MainActivity extends BaseActivity {
@@ -44,11 +58,36 @@ public class MainActivity extends BaseActivity {
     private PreviewView previewView;
 
     private GalleryHelper galleryHelper;
-
+    private Bitmap bitmapToProcess;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Variables Start:
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewReports);
+        setupBottomNavigation(bottomNavigationView, R.id.nav_reports);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        MaterialCardView uploadButton=findViewById(R.id.cardUploadImage);
+        previewView = findViewById(R.id.previewView);
+        MaterialCardView btnOpenCamera=findViewById(R.id.cardOpenCamera);
+        Button btnCapture = findViewById(R.id.btnCapture);
+        ImageButton btnCloseCamera = findViewById(R.id.btnCloseCamera);
+        MaterialCardView btnAddReport = findViewById(R.id.cardAddReport);
+        Button btnSubmitLostItem = findViewById(R.id.btnSubmitLostItem);
+        Button btnCancelLostItem =  findViewById(R.id.btnCancelLostItem);
+        ScrollView lostItemForm = findViewById(R.id.lostItemForm);
+        ImageView imagePreview = findViewById(R.id.imagePreview);
+        LinearLayout cameraPreviewButtons = findViewById(R.id.cameraPreviewButtons);
+        Button btnRetake = findViewById(R.id.btnRetake);
+        Button btnSaveFromCamera = findViewById(R.id.btnSaveFromCamera);
+        galleryHelper = new GalleryHelper(this, storageService, firestoreService, machineLearningService);
+        cameraHelper = new CameraHelper(this, previewView, storageService, firestoreService, machineLearningService);
+        Button saveImageFromGallery= findViewById(R.id.saveImageFromGallery);
+        Button cancelImageFromGallery= findViewById(R.id.cancelImageFromGallery);
+        LinearLayout galleryPreviewButtons= findViewById(R.id.galleryPreviewButtons);
+        // Variables End.
 
         if (!Repositories.getFoundRepo().isLoaded()) {
             Log.d("YourTag", "Your message here found repo");
@@ -57,23 +96,10 @@ public class MainActivity extends BaseActivity {
         if (!Repositories.getLostRepo().isLoaded()) {
             new FirestoreService().getItems(LostItem.class, Repositories.getLostRepo()::setItems);
         }
-        galleryHelper = new GalleryHelper(this, storageService, firestoreService, machineLearningService);
-        // UI setup
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewReports);
-        setupBottomNavigation(bottomNavigationView, R.id.nav_reports);
-        drawerLayout = findViewById(R.id.drawerLayout);
-        NavigationView navigationView = findViewById(R.id.navigationView);
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setStatusBarColor(Color.TRANSPARENT);
-
-//        WindowInsetsControllerCompat insetsController =
-//                WindowCompat.getInsetsController(window, window.getDecorView());
-//        insetsController.setAppearanceLightStatusBars(true);
-
         toolbar.setNavigationIcon(R.drawable.dots);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
@@ -92,20 +118,11 @@ public class MainActivity extends BaseActivity {
         });
 
         // Upload button click
-        View uploadButton = findViewById(R.id.uploadButton);
         uploadButton.setOnClickListener(v -> uploadImageFromGallery());
 
 //        showImageFromUrl("https://firebasestorage.googleapis.com/v0/b/finderlog-1f757.firebasestorage.app/o/uploads%2Fd64ab902-af62-4059-a434-d1718be44717.?alt=media&token=b3d43cff-2ef1-499a-b4c4-e82e1ac638f0");
 
         // camera opening code:
-        previewView = findViewById(R.id.previewView);
-        // Initialize CameraHelper
-        cameraHelper = new CameraHelper(this, previewView, storageService, firestoreService, machineLearningService);
-
-        Button btnOpenCamera = findViewById(R.id.btnOpenCamera);
-        Button btnCapture = findViewById(R.id.btnCapture);
-        ImageButton btnCloseCamera = findViewById(R.id.btnCloseCamera);
-        // Initially hide preview and capture button
         previewView.setVisibility(View.GONE);
         btnCapture.setVisibility(View.GONE);
 
@@ -116,6 +133,7 @@ public class MainActivity extends BaseActivity {
                 previewView.setVisibility(View.VISIBLE);
                 btnCapture.setVisibility(View.VISIBLE);
                 btnCloseCamera.setVisibility(View.VISIBLE);
+                btnAddReport.setVisibility(View.GONE);
                 btnOpenCamera.setVisibility(View.GONE);
                 uploadButton.setVisibility(View.GONE);
             } else {
@@ -124,18 +142,79 @@ public class MainActivity extends BaseActivity {
         });
 
         // Capture button click listener
-        btnCapture.setOnClickListener(v -> cameraHelper.takePhoto());
-
+        btnCapture.setOnClickListener(v -> cameraHelper.takePhoto(() -> {}));
 
         btnCloseCamera.setOnClickListener(v -> {
-//            cameraHelper.stopCamera();
             previewView.setVisibility(View.GONE);
             btnCapture.setVisibility(View.GONE);
             btnCloseCamera.setVisibility(View.GONE);
+            btnAddReport.setVisibility(View.VISIBLE);
             btnOpenCamera.setVisibility(View.VISIBLE);
             uploadButton.setVisibility(View.VISIBLE);
         });
-        // end
+
+        // report button + Report Form implementation
+        btnAddReport.setOnClickListener(v -> {
+            // Hide the buttons:
+            btnAddReport.setVisibility(View.GONE);
+            btnOpenCamera.setVisibility(View.GONE);
+            uploadButton.setVisibility(View.GONE);
+            // Show the Form:
+            lostItemForm.setVisibility(View.VISIBLE);
+        });
+        btnCancelLostItem.setOnClickListener(v -> {
+            // Close Form
+            lostItemForm.setVisibility(View.GONE);
+            // Show buttons:
+            uploadButton.setVisibility(View.VISIBLE);
+            btnAddReport.setVisibility(View.VISIBLE);
+            btnOpenCamera.setVisibility(View.VISIBLE);
+        });
+
+        btnSubmitLostItem.setOnClickListener(v -> {
+            submitLostItemReport();
+        });
+
+        btnRetake.setOnClickListener(v -> {
+            imagePreview.setVisibility(View.GONE);
+            imagePreview.setImageDrawable(null);
+            this.bitmapToProcess.recycle(); // deletes the bitmap from memory
+            cameraHelper.clearPendingImage();
+            this.bitmapToProcess = null;
+            cameraPreviewButtons.setVisibility(View.GONE);
+            cameraHelper.startCamera();
+            previewView.setVisibility(View.VISIBLE);
+            btnCapture.setVisibility(View.VISIBLE);
+            btnCloseCamera.setVisibility(View.VISIBLE);
+        });
+        btnSaveFromCamera.setOnClickListener(v -> {
+            cameraHelper.confirmAndUploadImage("test2");
+            btnSaveFromCamera.setVisibility(View.GONE);
+            cameraPreviewButtons.setVisibility(View.GONE);
+            imagePreview.setVisibility(View.GONE);
+            findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
+            findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
+            findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
+            bitmapToProcess = null;
+        });
+        saveImageFromGallery.setOnClickListener(v -> {
+            galleryHelper.confirmAndUploadImage("TEST1");
+            imagePreview.setVisibility(View.GONE);
+            imagePreview.setImageDrawable(null);
+            galleryPreviewButtons.setVisibility(View.GONE);
+            findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
+            findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
+            findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
+        });
+        cancelImageFromGallery.setOnClickListener(v -> {
+            galleryHelper.clearPendingImage();
+            imagePreview.setVisibility(View.GONE);
+            imagePreview.setImageDrawable(null);
+            galleryPreviewButtons.setVisibility(View.GONE);
+            findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
+            findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
+            findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
+        });
 
     }
 
@@ -146,30 +225,23 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
     }
-
-    /**
-     * Modern image picker result handler
-     */
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     if (imageUri != null) {
-                        galleryHelper.handleSelectedImage(imageUri);
+                        galleryHelper.handleSelectedImage(imageUri, () -> {
+                            ImageView imagePreview = findViewById(R.id.imagePreview);
+                            imagePreview.setImageURI(imageUri);
+                            imagePreview.setVisibility(View.VISIBLE);
+                            findViewById(R.id.galleryPreviewButtons).setVisibility(View.VISIBLE);
+                            findViewById(R.id.cardUploadImage).setVisibility(View.GONE);
+                            findViewById(R.id.cardOpenCamera).setVisibility(View.GONE);
+                            findViewById(R.id.cardAddReport).setVisibility(View.GONE);
+                        });
                     }
                 }
             });
-
-    // Example
-//    private void showImageFromUrl(String imageUrl) {
-//        ImageView imageView = findViewById(R.id.imageViewPreview);
-//        Glide.with(this)
-//                .load(imageUrl)
-
-    /// /                .placeholder(R.drawable.placeholder) // Show temp image until the loading finish (need to save image as placeholder.png)
-    /// /                .error(R.drawable.error_image)       // In case that we have error with the image (need to save image as error_image.png)
-//                .into(imageView);
-//    }
 
     // opening the camera code:
     private boolean allPermissionsGranted() {
@@ -178,6 +250,77 @@ public class MainActivity extends BaseActivity {
                 return false;
         }
         return true;
+    }
+    public void showCameraImagePreview(Bitmap bitmap) {
+        findViewById(R.id.btnCapture).setVisibility(View.GONE);
+        findViewById(R.id.btnCloseCamera).setVisibility(View.GONE);
+        findViewById(R.id.previewView).setVisibility(View.GONE);
+        findViewById(R.id.btnRetake).setVisibility(View.VISIBLE);
+        findViewById(R.id.btnSaveFromCamera).setVisibility(View.VISIBLE);
+        ImageView imagePreview = findViewById(R.id.imagePreview);
+        LinearLayout cameraPreviewButtons = findViewById(R.id.cameraPreviewButtons);
+
+        imagePreview.setImageBitmap(bitmap);
+        imagePreview.setVisibility(View.VISIBLE);
+        cameraPreviewButtons.setVisibility(View.VISIBLE);
+
+        findViewById(R.id.cardUploadImage).setVisibility(View.GONE);
+        findViewById(R.id.cardOpenCamera).setVisibility(View.GONE);
+        findViewById(R.id.cardAddReport).setVisibility(View.GONE);
+        this.bitmapToProcess = bitmap;
+    }
+    private void submitLostItemReport() {
+        EditText etTitle = findViewById(R.id.etTitle);
+        EditText etClientName = findViewById(R.id.etClientName);
+        EditText etClientPhone = findViewById(R.id.etClientPhone);
+        EditText etDescription = findViewById(R.id.etDescription);
+        EditText etLostDate = findViewById(R.id.etLostDate);
+
+        String title = etTitle.getText().toString().trim();
+        String clientName = etClientName.getText().toString().trim();
+        String clientPhone = etClientPhone.getText().toString().trim();
+        String description = etDescription.getText().toString().trim();
+        String lostDateStr = etLostDate.getText().toString().trim();
+
+        if (title.isEmpty() || clientName.isEmpty() || clientPhone.isEmpty() || description.isEmpty() || lostDateStr.isEmpty()) {
+            View rootView = findViewById(android.R.id.content);
+            Snackbar snackbar = Snackbar.make(rootView, "Please fill all fields", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            return;
+        }
+
+        Date lostDate;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            lostDate = sdf.parse(lostDateStr);
+        } catch (Exception e) {
+            View rootView = findViewById(android.R.id.content);
+            Snackbar snackbar = Snackbar.make(rootView, "Invalid date format. Use yyyy-MM-dd", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            return;
+        }
+        // Create LostItem object and add to FireStore
+        LostItem lostItem = new LostItem("1", clientName, clientPhone, description, "open",title, lostDate, new Date());
+        firestoreService.addItem(lostItem);
+        // Add the item to the repository
+        Repositories.getLostRepo().addItem(lostItem);
+        // Show popup message
+        View rootView = findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar.make(rootView, "Report submitted!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+
+        etTitle.setText("");
+        etClientName.setText("");
+        etClientPhone.setText("");
+        etDescription.setText("");
+        etLostDate.setText("");
+
+        ScrollView lostItemForm = findViewById(R.id.lostItemForm);
+        lostItemForm.setVisibility(View.GONE);
+
+        findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
+        findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
+        findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
     }
 
 

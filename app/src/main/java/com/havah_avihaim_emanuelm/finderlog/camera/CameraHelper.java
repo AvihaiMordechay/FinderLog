@@ -1,21 +1,25 @@
 package com.havah_avihaim_emanuelm.finderlog.camera;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
-import androidx.annotation.NonNull;
-import androidx.camera.core.ImageCaptureException;
 
-import com.havah_avihaim_emanuelm.finderlog.activities.MainActivity;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.havah_avihaim_emanuelm.finderlog.activities.MainActivity;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
@@ -31,11 +35,16 @@ public class CameraHelper {
     private final Context context;
     private final PreviewView previewView;
     private ImageCapture imageCapture;
-    private StorageService storageService;
-    private FirestoreService firestoreService;
-    private MachineLearningService machineLearningService;
+    private final StorageService storageService;
+    private final FirestoreService firestoreService;
+    private final MachineLearningService machineLearningService;
 
-    public CameraHelper(Context context, PreviewView previewView, StorageService storageService, FirestoreService firestoreService, MachineLearningService machineLearningService) {
+    private Uri pendingImageUri;
+    private String pendingMimeType;
+    private Runnable onReadyToDisplay;
+
+    public CameraHelper(Context context, PreviewView previewView, StorageService storageService,
+                        FirestoreService firestoreService, MachineLearningService machineLearningService) {
         this.context = context;
         this.previewView = previewView;
         this.storageService = storageService;
@@ -50,22 +59,16 @@ public class CameraHelper {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
 
-                // Preview
-                androidx.camera.core.Preview preview = new androidx.camera.core.Preview.Builder().build();
+                Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                // Select back camera as default
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
-                // ImageCapture
                 imageCapture = new ImageCapture.Builder().build();
 
-                // Unbind use cases before rebinding
                 cameraProvider.unbindAll();
-
-                // Bind to lifecycle
                 cameraProvider.bindToLifecycle(
-                        (MainActivity) context, // main activity
+                        (MainActivity) context,
                         cameraSelector,
                         preview,
                         imageCapture
@@ -77,16 +80,17 @@ public class CameraHelper {
         }, ContextCompat.getMainExecutor(context));
     }
 
-    public void takePhoto() {
+    public void takePhoto(Runnable onReadyToDisplay) {
         if (imageCapture == null) return;
 
-        // File to save the image
         File photoFile = new File(getOutputDirectory(),
                 new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
                         .format(new Date()) + ".jpg");
 
         ImageCapture.OutputFileOptions outputOptions =
                 new ImageCapture.OutputFileOptions.Builder(photoFile).build();
+
+        this.onReadyToDisplay = onReadyToDisplay;
 
         imageCapture.takePicture(
                 outputOptions,
@@ -95,23 +99,20 @@ public class CameraHelper {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults output) {
                         Uri savedUri = Uri.fromFile(photoFile);
-                        String msg = "Photo saved: " + savedUri;
-                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                        Log.d("CameraX", msg);
+                        pendingImageUri = savedUri;
+                        pendingMimeType = "image/jpeg";
 
-//                       Upload image to Firebase Storage
-                        storageService.uploadFile(savedUri, storagePath -> {
-                            if (storagePath != null) {
+                        Log.d("CameraX", "Photo saved: " + savedUri);
+                        Bitmap bitmap = getCorrectlyOrientedBitmap(photoFile.getAbsolutePath());
+                        if (bitmap != null) {
+                            ((MainActivity) context).showCameraImagePreview(bitmap);
+                        } else {
+                            Log.e("CameraX", "Failed to decode bitmap from saved image");
+                        }
 
-                                machineLearningService.analyzeImageFromFirebaseStorage(storagePath, labels -> {
-//
-// TODO: check if JPG is ok
-                                    firestoreService.addItem(new FoundItem("TEST", storagePath, "jpg", labels));
-                                });
-                            } else {
-                                Log.e("Upload", "Upload failed");
-                            }
-                        });
+                        if (onReadyToDisplay != null) {
+                            onReadyToDisplay.run();
+                        }
                     }
 
                     @Override
@@ -129,5 +130,61 @@ public class CameraHelper {
         else
             return context.getFilesDir();
     }
+
+    public Uri getPendingImageUri() {
+        return pendingImageUri;
+    }
+
+    public void confirmAndUploadImage(String title) {
+        if (pendingImageUri == null) {
+            Log.e("CameraX", "No photo to upload:");
+            return;
+        }
+
+        storageService.uploadFile(pendingImageUri, storagePath -> {
+            if (storagePath != null) {
+                machineLearningService.analyzeImageFromFirebaseStorage(storagePath, labels -> {
+                    firestoreService.addItem(new FoundItem(title, storagePath, pendingMimeType, labels));
+                    clearPendingImage();
+                });
+            } else {
+                Log.e("CameraX", "Upload failed:");
+            }
+        });
+    }
+
+    public void clearPendingImage() {
+        pendingImageUri = null;
+        pendingMimeType = null;
+    }
+    private Bitmap getCorrectlyOrientedBitmap(String imagePath) {
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+        try {
+            ExifInterface exif = new ExifInterface(imagePath);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            Matrix matrix = new Matrix();
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    matrix.postRotate(90);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    matrix.postRotate(180);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    matrix.postRotate(270);
+                    break;
+                default:
+                    return bitmap;
+            }
+
+            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return bitmap;
+        }
+    }
 }
+
+
 
