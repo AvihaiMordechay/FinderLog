@@ -24,7 +24,7 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
-
+import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -144,7 +144,9 @@ public class CameraHelper {
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
                 machineLearningService.analyzeImageFromFirebaseStorage(storagePath, labels -> {
-                    firestoreService.addItem(new FoundItem(title, storagePath, pendingMimeType, labels));
+                    FoundItem foundItem = new FoundItem(title, storagePath, pendingMimeType, labels);
+                    firestoreService.addItem(foundItem);
+                    Repositories.getFoundRepo().addItem(foundItem);
                     clearPendingImage();
                 });
             } else {

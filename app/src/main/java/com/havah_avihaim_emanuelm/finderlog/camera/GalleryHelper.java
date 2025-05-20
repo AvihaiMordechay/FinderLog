@@ -10,6 +10,7 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
+import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
 public class GalleryHelper {
 
     private  Context context;
@@ -71,7 +72,9 @@ public class GalleryHelper {
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
                 machineLearningService.analyzeImageFromFirebaseStorage(storagePath, labels -> {
-                    firestoreService.addItem(new FoundItem(title, storagePath, pendingMimeType, labels));
+                    FoundItem foundItem = new FoundItem(title, storagePath, pendingMimeType, labels);
+                    firestoreService.addItem(foundItem);
+                    Repositories.getFoundRepo().addItem(foundItem);
                     Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
                     clearPendingImage();
                 });

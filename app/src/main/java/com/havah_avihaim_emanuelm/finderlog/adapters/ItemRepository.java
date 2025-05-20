@@ -25,7 +25,7 @@ public class ItemRepository {
     }
 
     public void addItem(Item item) {
-        cachedItems.add(item);
+        cachedItems.add(0, item);
     }
 
     public void clearCache() {
