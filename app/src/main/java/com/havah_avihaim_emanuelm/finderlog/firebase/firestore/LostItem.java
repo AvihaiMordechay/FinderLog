@@ -62,7 +62,6 @@ public class LostItem implements Item {
         this.status = status;
     }
 
-    @Override
     public String getTitle() {
         return title;
     }

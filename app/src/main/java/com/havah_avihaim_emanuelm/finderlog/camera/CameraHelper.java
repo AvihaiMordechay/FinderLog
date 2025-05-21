@@ -1,6 +1,7 @@
 package com.havah_avihaim_emanuelm.finderlog.camera;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -19,6 +20,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.havah_avihaim_emanuelm.finderlog.MatchAlgorithm;
 import com.havah_avihaim_emanuelm.finderlog.activities.MainActivity;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
@@ -135,7 +137,7 @@ public class CameraHelper {
         return pendingImageUri;
     }
 
-    public void confirmAndUploadImage(String title) {
+    public void confirmAndUploadImage() {
         if (pendingImageUri == null) {
             Log.e("CameraX", "No photo to upload:");
             return;
@@ -143,12 +145,12 @@ public class CameraHelper {
 
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
-                machineLearningService.analyzeImageFromFirebaseStorage(storagePath, labels -> {
-                    FoundItem foundItem = new FoundItem(title, storagePath, pendingMimeType, labels);
-                    firestoreService.addItem(foundItem);
-                    Repositories.getFoundRepo().addItem(foundItem);
-                    clearPendingImage();
-                });
+                new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage);
+
+                Intent intent = new Intent(context, MachineLearningService.class);
+                intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
+                intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);
+                context.startService(intent);
             } else {
                 Log.e("CameraX", "Upload failed:");
             }

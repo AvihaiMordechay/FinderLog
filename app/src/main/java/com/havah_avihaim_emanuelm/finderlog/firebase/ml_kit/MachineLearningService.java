@@ -1,12 +1,13 @@
 package com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit;
 
-import android.content.Context;
+import android.app.Service;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.os.IBinder;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -18,68 +19,73 @@ import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 
 import java.util.List;
 
-public class MachineLearningService {
+public class MachineLearningService extends Service {
     private static final String TAG = "MLService";
+    public static final String ACTION_ANALYZE_IMAGE = "com.havah_avihaim_emanuelm.finderlog.ANALYZE_IMAGE";
+    public static final String EXTRA_IMAGE_URI = "image_uri";
+    public static final String EXTRA_LABELS = "labels";
 
-    /**
-     * Downloads an image from Firebase Storage using its Uri,
-     * then processes it through ML Kit to extract image labels.
-     *
-     * @param imageUri Firebase Storage URI (e.g., gs://... or https://...)
-     */
-    public void analyzeImageFromFirebaseStorage(String imageUri, LabelingCallback callback) {
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && ACTION_ANALYZE_IMAGE.equals(intent.getAction())) {
+            String imageUri = intent.getStringExtra(EXTRA_IMAGE_URI);
+            if (imageUri != null) {
+                analyzeImageFromFirebaseStorage(imageUri);
+            }
+        }
+
+        return START_NOT_STICKY;
+    }
+
+    private void analyzeImageFromFirebaseStorage(String imageUri) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl(imageUri);
 
-        // Download the image as bytes (limit to 5MB for safety)
         storageRef.getBytes(5 * 1024 * 1024)
                 .addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    runImageLabeling(bitmap, callback);
+                    runImageLabeling(bitmap, imageUri);
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to download image: " + e.getMessage()));
     }
 
-    /**
-     * Runs ML Kit image labeling on a given bitmap.
-     *
-     * @param bitmap the image to analyze
-     */
-    private void runImageLabeling(Bitmap bitmap, LabelingCallback callback) {
+    private void runImageLabeling(Bitmap bitmap, String imageUri) {
         try {
-            // Convert Bitmap to ML Kit's InputImage
             InputImage image = InputImage.fromBitmap(bitmap, 0);
-
-            // Create the image labeler with default options
             ImageLabeler labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
 
-            // Process the image and handle the results
             labeler.process(image)
                     .addOnSuccessListener(labels -> {
                         StringBuilder stringLabels = new StringBuilder();
-
                         for (int i = 0; i < labels.size(); i++) {
-                            Log.i("t", String.valueOf((labels.get(i).getConfidence() > 0.6)));
                             if (labels.get(i).getConfidence() > 0.6) {
                                 stringLabels.append(labels.get(i).getText()).append(", ");
                             }
                             Log.d(TAG, "Label: " + labels.get(i).getText() + ", Confidence: " + labels.get(i).getConfidence());
                         }
 
-                        callback.onLabelsReady(stringLabels.toString());
+                        sendLabelsBackToUI(imageUri, stringLabels.toString());
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Image labeling failed: " + e.getMessage());
-                        callback.onLabelsReady(null);
+                        sendLabelsBackToUI(imageUri, "");
                     });
-
         } catch (Exception e) {
             Log.e(TAG, "Failed to create InputImage: " + e.getMessage());
-            callback.onLabelsReady(null);
+            sendLabelsBackToUI(imageUri, "");
         }
     }
 
-    public interface LabelingCallback {
-        void onLabelsReady(String labels);
+    private void sendLabelsBackToUI(String imageUri, String labels) {
+        Intent resultIntent = new Intent(ACTION_ANALYZE_IMAGE);
+        resultIntent.putExtra(EXTRA_IMAGE_URI, imageUri);
+        resultIntent.putExtra(EXTRA_LABELS, labels);
+        sendBroadcast(resultIntent);
     }
 }

@@ -1,11 +1,14 @@
 package com.havah_avihaim_emanuelm.finderlog.camera;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.havah_avihaim_emanuelm.finderlog.MatchAlgorithm;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
@@ -63,26 +66,26 @@ public class GalleryHelper {
         return pendingImageUri;
     }
 
-    public void confirmAndUploadImage(String title) {
+    public void confirmAndUploadImage() {
         if (pendingImageUri == null) {
-            Toast.makeText(context, "No image to upload", Toast.LENGTH_SHORT).show();
+            Log.e("CameraX", "No photo to upload:");
             return;
         }
 
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
-                machineLearningService.analyzeImageFromFirebaseStorage(storagePath, labels -> {
-                    FoundItem foundItem = new FoundItem(title, storagePath, pendingMimeType, labels);
-                    firestoreService.addItem(foundItem);
-                    Repositories.getFoundRepo().addItem(foundItem);
-                    Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                    clearPendingImage();
-                });
+                new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage);
+
+                Intent intent = new Intent(context, MachineLearningService.class);
+                intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
+                intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);
+                context.startService(intent);
             } else {
-                Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show();
+                Log.e("CameraX", "Upload failed:");
             }
         });
     }
+
 
     public void clearPendingImage() {
         pendingImageUri = null;

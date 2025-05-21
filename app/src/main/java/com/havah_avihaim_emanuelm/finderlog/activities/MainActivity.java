@@ -214,7 +214,7 @@ public class MainActivity extends BaseActivity {
             btnCloseCamera.setVisibility(View.VISIBLE);
         });
         btnSaveFromCamera.setOnClickListener(v -> {
-            cameraHelper.confirmAndUploadImage("test2");
+            cameraHelper.confirmAndUploadImage();
             btnSaveFromCamera.setVisibility(View.GONE);
             cameraPreviewButtons.setVisibility(View.GONE);
             imagePreview.setVisibility(View.GONE);
@@ -224,7 +224,7 @@ public class MainActivity extends BaseActivity {
             bitmapToProcess = null;
         });
         saveImageFromGallery.setOnClickListener(v -> {
-            galleryHelper.confirmAndUploadImage("TEST1");
+            galleryHelper.confirmAndUploadImage();
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
             galleryPreviewButtons.setVisibility(View.GONE);
