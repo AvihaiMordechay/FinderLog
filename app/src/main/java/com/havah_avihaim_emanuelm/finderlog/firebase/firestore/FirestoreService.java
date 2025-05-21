@@ -7,16 +7,34 @@
     import java.util.*;
 
     public class FirestoreService {
+        private static FirestoreService instance;
         private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        private FirestoreService() {}
+
+        public static synchronized FirestoreService getSharedInstance() {
+            if (instance == null) {
+                instance = new FirestoreService();
+            }
+            return instance;
+        }
 
         // TODO: ADD THE ITEM TO THE HAVA'S LISTS!!!!!!!!
         public void addItem(Item item) {
             String collection = getCollectionName(item);
             db.collection(collection)
                     .add(item)
-                    .addOnSuccessListener(doc -> Log.d("Firestore", "Item added to " + collection + ": " + doc.getId()))
-                    .addOnFailureListener(e -> Log.e("Firestore", "Error adding item", e));
+                    .addOnSuccessListener(docRef -> {
+                        String id = docRef.getId();      // שליפת ה־Document ID שנוצר אוטומטית
+                        item.setId(id);                 // שמירה באובייקט עצמו
+                        docRef.update("id", id);        // עדכון השדה בתוך המסמך
+                        Log.d("Firestore", "Item added to " + collection + ": " + id);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error adding item", e);
+                    });
         }
+
 
         public void getItems(Class<? extends Item> clazz, Listener<List<? extends Item>> callback) {
             String collection = getCollectionName(clazz);

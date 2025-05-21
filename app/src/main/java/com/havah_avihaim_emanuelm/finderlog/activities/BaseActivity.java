@@ -10,7 +10,7 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningServi
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
 
 public abstract class BaseActivity extends AppCompatActivity {
-    protected static final FirestoreService firestoreService = new FirestoreService();
+    protected static final FirestoreService firestoreService = FirestoreService.getSharedInstance();
     protected static final StorageService storageService = new StorageService();
     protected static final MachineLearningService  machineLearningService = new MachineLearningService();
     protected void setupBottomNavigation(BottomNavigationView bottomNavigationView, int currentItemId) {

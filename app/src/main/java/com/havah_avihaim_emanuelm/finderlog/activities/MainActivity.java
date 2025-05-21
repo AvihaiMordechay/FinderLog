@@ -1,6 +1,7 @@
 package com.havah_avihaim_emanuelm.finderlog.activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,9 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.view.Gravity;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -37,7 +35,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.havah_avihaim_emanuelm.finderlog.R;
 import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.LostItem;
 import com.havah_avihaim_emanuelm.finderlog.camera.CameraHelper;
@@ -91,11 +88,12 @@ public class MainActivity extends BaseActivity {
 
         if (!Repositories.getFoundRepo().isLoaded()) {
             Log.d("YourTag", "Your message here found repo");
-            new FirestoreService().getItems(FoundItem.class, Repositories.getFoundRepo()::setItems);
+            firestoreService.getItems(FoundItem.class, Repositories.getFoundRepo()::setItems);
         }
         if (!Repositories.getLostRepo().isLoaded()) {
-            new FirestoreService().getItems(LostItem.class, Repositories.getLostRepo()::setItems);
+            firestoreService.getItems(LostItem.class, Repositories.getLostRepo()::setItems);
         }
+
         setSupportActionBar(toolbar);
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
@@ -107,11 +105,41 @@ public class MainActivity extends BaseActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_about) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("About the App");
+
+
+                String message = "App Name: FinderLog\n" +
+                        "Package: " + getPackageName() + "\n\n" +
+                        "Android Version: " + android.os.Build.VERSION.RELEASE + "\n" +
+                        "SDK: " + android.os.Build.VERSION.SDK_INT + "\n" +
+                        "Device: " + android.os.Build.MODEL + "\n\n" +
+                        "Submitted by:\n" +
+                        "Hava Haviv\n" +
+                        "Emanuel Melloul\n" +
+                        "Avihai Mordechay\n\n" +
+                        "Submission Date: May 21, 2025";
+
+                builder.setMessage(message);
+
+                builder.setPositiveButton("OK", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
                 // About action
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));
             } else if (id == R.id.nav_exit) {
-                // Exit action
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Exit");
+                builder.setMessage("Are you sure you want to exit?");
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    finishAffinity();
+                });
+                builder.setNegativeButton("Cancel", null);
+
+                builder.show();
+
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
@@ -300,7 +328,7 @@ public class MainActivity extends BaseActivity {
             return;
         }
         // Create LostItem object and add to FireStore
-        LostItem lostItem = new LostItem("1", clientName, clientPhone, description, "open",title, lostDate, new Date());
+        LostItem lostItem = new LostItem(clientName, clientPhone, description, "open",title, lostDate, new Date());
         firestoreService.addItem(lostItem);
         // Add the item to the repository
         Repositories.getLostRepo().addItem(lostItem);

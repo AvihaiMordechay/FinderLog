@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
 import com.havah_avihaim_emanuelm.finderlog.adapters.ItemAdapter;
+import com.havah_avihaim_emanuelm.finderlog.adapters.ItemRepository;
 import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
 
@@ -28,8 +29,9 @@ public class LostActivity extends BaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        List<Item> lostItems = Repositories.getLostRepo().getCachedItems();
-        recyclerView.setAdapter(new ItemAdapter(lostItems));
+        ItemRepository lostRepo = Repositories.getLostRepo();
+        recyclerView.setAdapter(new ItemAdapter(lostRepo));
+
 
     }
 }
