@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.content.pm.PackageManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -84,6 +87,15 @@ public class MainActivity extends BaseActivity {
         Button saveImageFromGallery= findViewById(R.id.saveImageFromGallery);
         Button cancelImageFromGallery= findViewById(R.id.cancelImageFromGallery);
         LinearLayout galleryPreviewButtons= findViewById(R.id.galleryPreviewButtons);
+        ImageButton btnTogglePersonal = findViewById(R.id.btnTogglePersonal);
+        ImageButton btnToggleClothing = findViewById(R.id.btnToggleClothing);
+        ImageButton btnToggleTech = findViewById(R.id.btnToggleTech);
+        ImageButton btnToggleOther = findViewById(R.id.btnToggleOther);
+
+        HorizontalScrollView personalScroll = findViewById(R.id.personalItemsScroll);
+        HorizontalScrollView clothingScroll = findViewById(R.id.clothingDetailsScroll);
+        HorizontalScrollView techScroll = findViewById(R.id.techItemsScroll);
+        HorizontalScrollView otherScroll = findViewById(R.id.otherItemsScroll);
         // Variables End.
 
         if (!Repositories.getFoundRepo().isLoaded()) {
@@ -202,7 +214,21 @@ public class MainActivity extends BaseActivity {
         btnSubmitLostItem.setOnClickListener(v -> {
             submitLostItemReport();
         });
+        btnTogglePersonal.setOnClickListener(v -> {
+            toggleScrollAndIcon(personalScroll, btnTogglePersonal, R.drawable.switch_on, R.drawable.switch_off);
+        });
 
+        btnToggleClothing.setOnClickListener(v -> {
+            toggleScrollAndIcon(clothingScroll, btnToggleClothing, R.drawable.switch_on, R.drawable.switch_off);
+        });
+
+        btnToggleTech.setOnClickListener(v -> {
+            toggleScrollAndIcon(techScroll, btnToggleTech, R.drawable.switch_on, R.drawable.switch_off);
+        });
+
+        btnToggleOther.setOnClickListener(v -> {
+            toggleScrollAndIcon(otherScroll, btnToggleOther, R.drawable.switch_on, R.drawable.switch_off);
+        });
         btnRetake.setOnClickListener(v -> {
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
@@ -243,6 +269,7 @@ public class MainActivity extends BaseActivity {
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         });
+
 
     }
 
@@ -301,14 +328,13 @@ public class MainActivity extends BaseActivity {
         EditText etTitle = findViewById(R.id.etTitle);
         EditText etClientName = findViewById(R.id.etClientName);
         EditText etClientPhone = findViewById(R.id.etClientPhone);
-        EditText etDescription = findViewById(R.id.etDescription);
         EditText etLostDate = findViewById(R.id.etLostDate);
 
         String title = etTitle.getText().toString().trim();
         String clientName = etClientName.getText().toString().trim();
         String clientPhone = etClientPhone.getText().toString().trim();
-        String description = etDescription.getText().toString().trim();
         String lostDateStr = etLostDate.getText().toString().trim();
+        String description = getSelectedItemsDescription();
 
         if (title.isEmpty() || clientName.isEmpty() || clientPhone.isEmpty() || description.isEmpty() || lostDateStr.isEmpty()) {
             View rootView = findViewById(android.R.id.content);
@@ -340,7 +366,6 @@ public class MainActivity extends BaseActivity {
         etTitle.setText("");
         etClientName.setText("");
         etClientPhone.setText("");
-        etDescription.setText("");
         etLostDate.setText("");
 
         ScrollView lostItemForm = findViewById(R.id.lostItemForm);
@@ -350,6 +375,45 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
         findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
     }
+    private String getSelectedItemsDescription() {
+        StringBuilder selectedItems = new StringBuilder();
 
+        int[] categoryContainerIds = new int[] {
+                R.id.personalItemsContainer,
+                R.id.techItemsContainer,
+                R.id.otherItemsContainer
+        };
+
+        for (int containerId : categoryContainerIds) {
+            LinearLayout container = findViewById(containerId);
+            if (container != null) {
+                int childCount = container.getChildCount();
+                for (int i = 0; i < childCount; i++) {
+                    View child = container.getChildAt(i);
+                    if (child instanceof CheckBox) {
+                        CheckBox checkBox = (CheckBox) child;
+                        if (checkBox.isChecked()) {
+                            if (selectedItems.length() > 0) {
+                                selectedItems.append(", ");
+                            }
+                            selectedItems.append(checkBox.getText().toString());
+                        }
+                    }
+                }
+            }
+        }
+
+        return selectedItems.toString();
+    }
+    private void toggleScrollAndIcon(View scrollView, ImageButton button, int iconOnResId, int iconOffResId) {
+        boolean isVisible = scrollView.getVisibility() == View.VISIBLE;
+        if (isVisible) {
+            scrollView.setVisibility(View.GONE);
+            button.setImageResource(iconOffResId);
+        } else {
+            scrollView.setVisibility(View.VISIBLE);
+            button.setImageResource(iconOnResId);
+        }
+    }
 
 }
