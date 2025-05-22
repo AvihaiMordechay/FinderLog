@@ -14,12 +14,13 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningServi
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
+
 public class GalleryHelper {
 
-    private  Context context;
-    private  StorageService storageService;
-    private  FirestoreService firestoreService;
-    private  MachineLearningService machineLearningService;
+    private Context context;
+    private StorageService storageService;
+    private FirestoreService firestoreService;
+    private MachineLearningService machineLearningService;
 
     private Uri pendingImageUri;
     private String pendingMimeType;
@@ -66,7 +67,7 @@ public class GalleryHelper {
         return pendingImageUri;
     }
 
-    public void confirmAndUploadImage() {
+    public void confirmAndUploadImage(String imageTitle) {
         if (pendingImageUri == null) {
             Log.e("CameraX", "No photo to upload:");
             return;
@@ -74,7 +75,7 @@ public class GalleryHelper {
 
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
-                new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage);
+                new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage, imageTitle);
 
                 Intent intent = new Intent(context, MachineLearningService.class);
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);

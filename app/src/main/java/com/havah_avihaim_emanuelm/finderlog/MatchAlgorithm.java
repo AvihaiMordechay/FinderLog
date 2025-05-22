@@ -21,11 +21,14 @@ public class MatchAlgorithm {
     private final String mimeType;
     private final Runnable onComplete;
 
-    public MatchAlgorithm(Context context, FirestoreService firestoreService, String mimeType, Runnable onComplete) {
+    private String imgTitle;
+
+    public MatchAlgorithm(Context context, FirestoreService firestoreService, String mimeType, Runnable onComplete, String imgTitle) {
         this.context = context;
         this.firestoreService = firestoreService;
         this.mimeType = mimeType;
         this.onComplete = onComplete;
+        this.imgTitle = imgTitle;
 
         registerReceiver();
     }
@@ -42,10 +45,9 @@ public class MatchAlgorithm {
             String labels = intent.getStringExtra(MachineLearningService.EXTRA_LABELS);
 
             if (imageUri != null) {
-                FoundItem foundItem = new FoundItem(imageUri, mimeType, labels);
+                FoundItem foundItem = new FoundItem(imgTitle, imageUri, mimeType, labels);
                 firestoreService.addItem(foundItem);
                 Repositories.getFoundRepo().addItem(foundItem);
-                Log.i("test","good");
                 Toast.makeText(context, "Image uploaded and processed successfully", Toast.LENGTH_SHORT).show();
 
                 if (onComplete != null) {

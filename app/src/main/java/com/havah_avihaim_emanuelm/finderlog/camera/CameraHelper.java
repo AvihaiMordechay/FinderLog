@@ -27,6 +27,7 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
 import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -137,7 +138,7 @@ public class CameraHelper {
         return pendingImageUri;
     }
 
-    public void confirmAndUploadImage() {
+    public void confirmAndUploadImage(String imageTitle) {
         if (pendingImageUri == null) {
             Log.e("CameraX", "No photo to upload:");
             return;
@@ -145,7 +146,7 @@ public class CameraHelper {
 
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
-                new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage);
+                new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage, imageTitle);
 
                 Intent intent = new Intent(context, MachineLearningService.class);
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
@@ -161,6 +162,7 @@ public class CameraHelper {
         pendingImageUri = null;
         pendingMimeType = null;
     }
+
     private Bitmap getCorrectlyOrientedBitmap(String imagePath) {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         try {

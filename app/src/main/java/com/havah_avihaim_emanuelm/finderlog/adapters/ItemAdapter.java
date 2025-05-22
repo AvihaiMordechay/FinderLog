@@ -43,6 +43,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         }
 
         public void bind(Item item) {
+            title.setText(item.getTitle());
             String desc = item.getDescription();
             description.setText((desc == null || desc.isEmpty()) ? "No description available." : desc);
 

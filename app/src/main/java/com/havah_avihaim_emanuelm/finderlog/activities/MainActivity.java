@@ -94,6 +94,9 @@ public class MainActivity extends BaseActivity {
         ImageButton btnToggleClothing = findViewById(R.id.btnToggleClothing);
         ImageButton btnToggleTech = findViewById(R.id.btnToggleTech);
         ImageButton btnToggleOther = findViewById(R.id.btnToggleOther);
+        EditText etCameraImageTitle = findViewById(R.id.etCameraImageTitle);
+        EditText etGalleryImageTitle = findViewById(R.id.etGalleryImageTitle);
+
 
         HorizontalScrollView personalScroll = findViewById(R.id.personalItemsScroll);
         HorizontalScrollView clothingScroll = findViewById(R.id.clothingDetailsScroll);
@@ -204,6 +207,8 @@ public class MainActivity extends BaseActivity {
         btnRetake.setOnClickListener(v -> {
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
+            etCameraImageTitle.setVisibility(View.GONE);
+            etCameraImageTitle.setText("");
             this.bitmapToProcess.recycle(); // deletes the bitmap from memory
             cameraHelper.clearPendingImage();
             this.bitmapToProcess = null;
@@ -214,9 +219,12 @@ public class MainActivity extends BaseActivity {
             btnCloseCamera.setVisibility(View.VISIBLE);
         });
         btnSaveFromCamera.setOnClickListener(v -> {
-            cameraHelper.confirmAndUploadImage();
+            String imageTitle = etCameraImageTitle.getText().toString().trim();
+            cameraHelper.confirmAndUploadImage(imageTitle);
             btnSaveFromCamera.setVisibility(View.GONE);
             cameraPreviewButtons.setVisibility(View.GONE);
+            etCameraImageTitle.setVisibility(View.GONE);
+            etCameraImageTitle.setText("");
             imagePreview.setVisibility(View.GONE);
             findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
@@ -224,10 +232,13 @@ public class MainActivity extends BaseActivity {
             bitmapToProcess = null;
         });
         saveImageFromGallery.setOnClickListener(v -> {
-            galleryHelper.confirmAndUploadImage();
+            String imageTitle = etGalleryImageTitle.getText().toString().trim();
+            galleryHelper.confirmAndUploadImage(imageTitle);
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
             galleryPreviewButtons.setVisibility(View.GONE);
+            etGalleryImageTitle.setVisibility(View.GONE);
+            etGalleryImageTitle.setText("");
             findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
@@ -237,6 +248,8 @@ public class MainActivity extends BaseActivity {
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
             galleryPreviewButtons.setVisibility(View.GONE);
+            etGalleryImageTitle.setVisibility(View.GONE);
+            etGalleryImageTitle.setText("");
             findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
@@ -259,8 +272,11 @@ public class MainActivity extends BaseActivity {
                     if (imageUri != null) {
                         galleryHelper.handleSelectedImage(imageUri, () -> {
                             ImageView imagePreview = findViewById(R.id.imagePreview);
+                            EditText etGalleryImageTitle = findViewById(R.id.etGalleryImageTitle);
+
                             imagePreview.setImageURI(imageUri);
                             imagePreview.setVisibility(View.VISIBLE);
+                            etGalleryImageTitle.setVisibility(View.VISIBLE);
                             findViewById(R.id.galleryPreviewButtons).setVisibility(View.VISIBLE);
                             findViewById(R.id.cardUploadImage).setVisibility(View.GONE);
                             findViewById(R.id.cardOpenCamera).setVisibility(View.GONE);
@@ -286,10 +302,12 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btnSaveFromCamera).setVisibility(View.VISIBLE);
         ImageView imagePreview = findViewById(R.id.imagePreview);
         LinearLayout cameraPreviewButtons = findViewById(R.id.cameraPreviewButtons);
+        EditText etCameraImageTitle = findViewById(R.id.etCameraImageTitle);
 
         imagePreview.setImageBitmap(bitmap);
         imagePreview.setVisibility(View.VISIBLE);
         cameraPreviewButtons.setVisibility(View.VISIBLE);
+        etCameraImageTitle.setVisibility(View.VISIBLE);
 
         findViewById(R.id.cardUploadImage).setVisibility(View.GONE);
         findViewById(R.id.cardOpenCamera).setVisibility(View.GONE);

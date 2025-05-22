@@ -9,10 +9,12 @@ public class FoundItem implements Item {
     private String imgPath;
     private String imgType;
     private String status;
+    private String title;
     private Date foundDate;
 
     public FoundItem() {};
-    public FoundItem( String imgPath, String imgType, String description) {
+    public FoundItem(String title, String imgPath, String imgType, String description) {
+        this.title = title;
         this.imgPath = imgPath;
         this.imgType = imgType;
 //        this.id = TODO: Generate
@@ -43,6 +45,11 @@ public class FoundItem implements Item {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
     }
 
 
