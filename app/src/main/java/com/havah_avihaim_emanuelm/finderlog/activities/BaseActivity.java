@@ -1,7 +1,12 @@
 package com.havah_avihaim_emanuelm.finderlog.activities;
 
 import android.content.Intent;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
@@ -41,5 +46,21 @@ public abstract class BaseActivity extends AppCompatActivity {
             return true;
         });
     }
+
+    protected void updateEmptyState(RecyclerView recyclerView, boolean isEmpty) {
+        Log.d("updateEmptyState", "In updateEmptyState, isEmpty = " + isEmpty);
+
+        TextView emptyMessage = findViewById(R.id.emptyMessage);
+        if (isEmpty) {
+            recyclerView.setVisibility(View.GONE);
+            emptyMessage.setVisibility(View.VISIBLE);
+            recyclerView.setContentDescription(getString(R.string.empty_list));
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyMessage.setVisibility(View.GONE);
+            recyclerView.setContentDescription(null);
+        }
+    }
+
 
 }

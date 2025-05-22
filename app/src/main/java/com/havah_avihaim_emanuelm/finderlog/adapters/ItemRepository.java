@@ -8,14 +8,9 @@ import java.util.List;
 
 public class ItemRepository {
     private final List<Item> cachedItems = new ArrayList<>();
-    private boolean isLoaded = false;
-
-    public List<Item> getCachedItems() {
-        return cachedItems;
-    }
-
-    public boolean isLoaded() {
-        return isLoaded;
+    private boolean needsLoading = true;
+    public boolean needsLoading() {
+        return needsLoading;
     }
 
     // Accepts FoundItem or LostItem
@@ -27,7 +22,7 @@ public class ItemRepository {
             return date2.compareTo(date1);
         });
         cachedItems.addAll(items);
-        isLoaded = true;
+        needsLoading = false;
     }
 
     public void addItem(Item item) {
@@ -50,8 +45,4 @@ public class ItemRepository {
         return cachedItems.size();
     }
 
-    public void clearCache() {
-        cachedItems.clear();
-        isLoaded = false;
-    }
 }

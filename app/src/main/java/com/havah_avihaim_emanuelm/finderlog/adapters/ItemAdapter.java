@@ -25,8 +25,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     protected static final FirestoreService firestoreService = FirestoreService.getSharedInstance();
 
-    public ItemAdapter(ItemRepository repository) {
+    private final OnItemListChangedListener listChangedListener;
+
+    public interface OnItemListChangedListener {
+        void onListChanged();
+    }
+    public ItemAdapter(ItemRepository repository, OnItemListChangedListener listener) {
         this.repository = repository;
+        this.listChangedListener = listener;
     }
 
 
@@ -61,7 +67,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             }
         }
 
-        public void bind(Item item, int position, ItemRepository repository, RecyclerView.Adapter adapter) {
+        public void bind(Item item, int position, ItemRepository repository,
+                         RecyclerView.Adapter adapter, OnItemListChangedListener listChangedListener) {
             title.setText(item.getTitle());
             String desc = item.getDescription();
             description.setText((desc == null || desc.isEmpty()) ? "No description available." : desc);
@@ -84,15 +91,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 reportDate.setText("Reported: " + lostItem.getReportDate());
 
                 // Toggle expand/collapse
-                itemView.setOnClickListener(v -> {
-                    expandedLayout.setVisibility(expandedLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-                });
+                itemView.setOnClickListener(v ->
+                        expandedLayout.setVisibility(expandedLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE));
 
                 // Delete button
                 deleteButton.setOnClickListener(v -> {
                     repository.removeItemAt(position);
                     adapter.notifyItemRemoved(position);
                     firestoreService.deleteItem(LostItem.class ,lostItem.getId());
+                    if (repository.getSize() == 0 && listChangedListener != null) {
+                        listChangedListener.onListChanged();
+                    }
+
                 });
             }
         }
@@ -121,7 +131,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(repository.getItemAt(position), position, repository, this);
+        holder.bind(repository.getItemAt(position), position, repository, this, listChangedListener);
     }
 
     @Override

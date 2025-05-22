@@ -10,9 +10,6 @@ import com.havah_avihaim_emanuelm.finderlog.R;
 import com.havah_avihaim_emanuelm.finderlog.adapters.ItemAdapter;
 import com.havah_avihaim_emanuelm.finderlog.adapters.ItemRepository;
 import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
-
-import java.util.List;
 
 public class LostActivity extends BaseActivity {
 
@@ -30,8 +27,10 @@ public class LostActivity extends BaseActivity {
 
 
         ItemRepository lostRepo = Repositories.getLostRepo();
-        recyclerView.setAdapter(new ItemAdapter(lostRepo));
-
+        updateEmptyState(recyclerView, lostRepo.getSize()==0);
+        ItemAdapter adapter = new ItemAdapter(lostRepo,
+                () -> updateEmptyState(recyclerView,lostRepo.getSize()==0));
+        recyclerView.setAdapter(adapter);
 
     }
 }

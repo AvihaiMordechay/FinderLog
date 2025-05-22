@@ -26,10 +26,27 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="8dp"
+        android:contentDescription="@string/empty_list"
         app:layout_constraintTop_toBottomOf="@id/textViewLost"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewLost"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/emptyMessage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/empty_list"
+        android:textSize="18sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/textViewLost"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewLost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationViewLost"

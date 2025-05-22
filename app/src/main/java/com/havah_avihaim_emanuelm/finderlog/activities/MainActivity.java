@@ -2,15 +2,14 @@ package com.havah_avihaim_emanuelm.finderlog.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.content.pm.PackageManager;
 import android.widget.Button;
@@ -98,11 +97,10 @@ public class MainActivity extends BaseActivity {
         HorizontalScrollView otherScroll = findViewById(R.id.otherItemsScroll);
         // Variables End.
 
-        if (!Repositories.getFoundRepo().isLoaded()) {
-            Log.d("YourTag", "Your message here found repo");
+        if (Repositories.getFoundRepo().needsLoading()) {
             firestoreService.getItems(FoundItem.class, Repositories.getFoundRepo()::setItems);
         }
-        if (!Repositories.getLostRepo().isLoaded()) {
+        if (Repositories.getLostRepo().needsLoading()) {
             firestoreService.getItems(LostItem.class, Repositories.getLostRepo()::setItems);
         }
 
@@ -117,37 +115,14 @@ public class MainActivity extends BaseActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_about) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("About the App");
-
-
-                String message = "App Name: FinderLog\n" +
-                        "Package: " + getPackageName() + "\n\n" +
-                        "Android Version: " + android.os.Build.VERSION.RELEASE + "\n" +
-                        "SDK: " + android.os.Build.VERSION.SDK_INT + "\n" +
-                        "Device: " + android.os.Build.MODEL + "\n\n" +
-                        "Submitted by:\n" +
-                        "Hava Haviv\n" +
-                        "Emanuel Melloul\n" +
-                        "Avihai Mordechay\n\n" +
-                        "Submission Date: May 21, 2025";
-
-                builder.setMessage(message);
-
-                builder.setPositiveButton("OK", null);
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-                // About action
+                buildAboutDialog(this).create().show();
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));
             } else if (id == R.id.nav_exit) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Exit");
                 builder.setMessage("Are you sure you want to exit?");
-                builder.setPositiveButton("OK", (dialog, which) -> {
-                    finishAffinity();
-                });
+                builder.setPositiveButton("OK", (dialog, which) -> finishAffinity());
                 builder.setNegativeButton("Cancel", null);
 
                 builder.show();
@@ -211,24 +186,15 @@ public class MainActivity extends BaseActivity {
             btnOpenCamera.setVisibility(View.VISIBLE);
         });
 
-        btnSubmitLostItem.setOnClickListener(v -> {
-            submitLostItemReport();
-        });
-        btnTogglePersonal.setOnClickListener(v -> {
-            toggleScrollAndIcon(personalScroll, btnTogglePersonal, R.drawable.switch_on, R.drawable.switch_off);
-        });
+        btnSubmitLostItem.setOnClickListener(v -> submitLostItemReport());
+        btnTogglePersonal.setOnClickListener(v ->
+                toggleScrollAndIcon(personalScroll, btnTogglePersonal, R.drawable.switch_on, R.drawable.switch_off));
 
-        btnToggleClothing.setOnClickListener(v -> {
-            toggleScrollAndIcon(clothingScroll, btnToggleClothing, R.drawable.switch_on, R.drawable.switch_off);
-        });
+        btnToggleClothing.setOnClickListener(v -> toggleScrollAndIcon(clothingScroll, btnToggleClothing, R.drawable.switch_on, R.drawable.switch_off));
 
-        btnToggleTech.setOnClickListener(v -> {
-            toggleScrollAndIcon(techScroll, btnToggleTech, R.drawable.switch_on, R.drawable.switch_off);
-        });
+        btnToggleTech.setOnClickListener(v -> toggleScrollAndIcon(techScroll, btnToggleTech, R.drawable.switch_on, R.drawable.switch_off));
 
-        btnToggleOther.setOnClickListener(v -> {
-            toggleScrollAndIcon(otherScroll, btnToggleOther, R.drawable.switch_on, R.drawable.switch_off);
-        });
+        btnToggleOther.setOnClickListener(v -> toggleScrollAndIcon(otherScroll, btnToggleOther, R.drawable.switch_on, R.drawable.switch_off));
         btnRetake.setOnClickListener(v -> {
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
@@ -272,6 +238,28 @@ public class MainActivity extends BaseActivity {
 
 
     }
+
+    private AlertDialog.Builder buildAboutDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("About the App");
+
+        String message = "App Name: FinderLog\n" +
+                "Package: " + context.getPackageName() + "\n\n" +
+                "Android Version: " + android.os.Build.VERSION.RELEASE + "\n" +
+                "API: " + android.os.Build.VERSION.SDK_INT + "\n" +
+                "Device: " + android.os.Build.MODEL + "\n\n" +
+                "Submitted by:\n" +
+                "Hava Haviv\n" +
+                "Emanuel Malloul\n" +
+                "Avihai Mordechay\n\n" +
+                "Submission Date: May 21, 2025";
+
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", null);
+
+        return builder;
+    }
+
 
     /**
      * Launches gallery image picker using the new ActivityResult API.
