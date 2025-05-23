@@ -16,9 +16,8 @@ public class LostItem implements Item {
     public LostItem() {
     }
 
-    public LostItem(String id, String clientName, String clientPhone, String description,
+    public LostItem(String clientName, String clientPhone, String description,
                     String status, String title, Date lostDate, Date reportDate) {
-        this.id = id;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.description = description;
@@ -31,6 +30,7 @@ public class LostItem implements Item {
     public String getClientName() {
         return clientName;
     }
+
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
@@ -49,6 +49,10 @@ public class LostItem implements Item {
         return description;
     }
 
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
     public void setDescription(String description) {
         this.description = description;
     }

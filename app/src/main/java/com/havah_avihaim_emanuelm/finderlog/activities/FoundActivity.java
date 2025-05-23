@@ -8,9 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
 import com.havah_avihaim_emanuelm.finderlog.adapters.ItemAdapter;
+import com.havah_avihaim_emanuelm.finderlog.adapters.ItemRepository;
 import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
-import java.util.List;
 
 public class FoundActivity extends BaseActivity {
 
@@ -26,10 +25,11 @@ public class FoundActivity extends BaseActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewFound);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Item> foundItems = Repositories.getFoundRepo().getCachedItems();
-        recyclerView.setAdapter(new ItemAdapter(foundItems));
+        ItemRepository foundRepo = Repositories.getFoundRepo();
+        updateEmptyState(recyclerView, foundRepo.getSize()==0);
+        ItemAdapter adapter = new ItemAdapter(foundRepo,
+                () -> updateEmptyState(recyclerView,foundRepo.getSize()==0));
+        recyclerView.setAdapter(adapter);
 
     }
-
-
 }

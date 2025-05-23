@@ -1,7 +1,6 @@
 package com.havah_avihaim_emanuelm.finderlog.firebase.firestore;
 
 import java.util.Date;
-import java.util.List;
 
 public class FoundItem implements Item {
     private String id;
@@ -17,7 +16,6 @@ public class FoundItem implements Item {
         this.title = title;
         this.imgPath = imgPath;
         this.imgType = imgType;
-//        this.id = TODO: Generate
         this.status = "open";
         this.foundDate = new Date();
         this.description = description;
@@ -27,6 +25,11 @@ public class FoundItem implements Item {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setDescription(String description) {
@@ -52,6 +55,9 @@ public class FoundItem implements Item {
         return title;
     }
 
+    public Date getReportDate() {
+        return foundDate;
+    }
 
     public Date getFoundDate() {
         return foundDate;
