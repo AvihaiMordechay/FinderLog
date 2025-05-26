@@ -40,8 +40,6 @@ public class CameraHelper {
     private ImageCapture imageCapture;
     private final StorageService storageService;
     private final FirestoreService firestoreService;
-    private final MachineLearningService machineLearningService;
-
     private Uri pendingImageUri;
     private String pendingMimeType;
     private Runnable onReadyToDisplay;
@@ -52,7 +50,6 @@ public class CameraHelper {
         this.previewView = previewView;
         this.storageService = storageService;
         this.firestoreService = firestoreService;
-        this.machineLearningService = machineLearningService;
     }
 
     public void startCamera() {

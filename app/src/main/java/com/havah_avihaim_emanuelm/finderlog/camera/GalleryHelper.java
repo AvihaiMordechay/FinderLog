@@ -12,16 +12,12 @@ import com.havah_avihaim_emanuelm.finderlog.MatchAlgorithm;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
 
 public class GalleryHelper {
 
     private Context context;
     private StorageService storageService;
     private FirestoreService firestoreService;
-    private MachineLearningService machineLearningService;
-
     private Uri pendingImageUri;
     private String pendingMimeType;
 
@@ -32,7 +28,6 @@ public class GalleryHelper {
         this.context = context;
         this.storageService = storageService;
         this.firestoreService = firestoreService;
-        this.machineLearningService = machineLearningService;
     }
 
     public void handleSelectedImage(Uri imageUri, Runnable onReadyToDisplay) {

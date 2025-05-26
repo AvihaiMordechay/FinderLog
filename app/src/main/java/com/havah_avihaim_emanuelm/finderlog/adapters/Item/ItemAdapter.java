@@ -1,4 +1,6 @@
-package com.havah_avihaim_emanuelm.finderlog.adapters;
+package com.havah_avihaim_emanuelm.finderlog.adapters.Item;
+
+import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getMatchRepo;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,7 +100,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 deleteButton.setOnClickListener(v -> {
                     repository.removeItemAt(position);
                     adapter.notifyItemRemoved(position);
+                    firestoreService.deleteLostItemFromMatches(lostItem);
                     firestoreService.deleteItem(LostItem.class ,lostItem.getId());
+                    getMatchRepo().removeLostItem(lostItem);
                     if (repository.getSize() == 0 && listChangedListener != null) {
                         listChangedListener.onListChanged();
                     }

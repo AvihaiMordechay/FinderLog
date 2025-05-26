@@ -35,6 +35,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.havah_avihaim_emanuelm.finderlog.MatchAlgorithm;
 import com.havah_avihaim_emanuelm.finderlog.R;
 import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
@@ -58,6 +59,7 @@ public class MainActivity extends BaseActivity {
 
     private GalleryHelper galleryHelper;
     private Bitmap bitmapToProcess;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,14 +70,14 @@ public class MainActivity extends BaseActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        MaterialCardView uploadButton=findViewById(R.id.cardUploadImage);
+        MaterialCardView uploadButton = findViewById(R.id.cardUploadImage);
         previewView = findViewById(R.id.previewView);
-        MaterialCardView btnOpenCamera=findViewById(R.id.cardOpenCamera);
+        MaterialCardView btnOpenCamera = findViewById(R.id.cardOpenCamera);
         Button btnCapture = findViewById(R.id.btnCapture);
         ImageButton btnCloseCamera = findViewById(R.id.btnCloseCamera);
         MaterialCardView btnAddReport = findViewById(R.id.cardAddReport);
         Button btnSubmitLostItem = findViewById(R.id.btnSubmitLostItem);
-        Button btnCancelLostItem =  findViewById(R.id.btnCancelLostItem);
+        Button btnCancelLostItem = findViewById(R.id.btnCancelLostItem);
         ScrollView lostItemForm = findViewById(R.id.lostItemForm);
         ImageView imagePreview = findViewById(R.id.imagePreview);
         LinearLayout cameraPreviewButtons = findViewById(R.id.cameraPreviewButtons);
@@ -83,9 +85,9 @@ public class MainActivity extends BaseActivity {
         Button btnSaveFromCamera = findViewById(R.id.btnSaveFromCamera);
         galleryHelper = new GalleryHelper(this, storageService, firestoreService, machineLearningService);
         cameraHelper = new CameraHelper(this, previewView, storageService, firestoreService, machineLearningService);
-        Button saveImageFromGallery= findViewById(R.id.saveImageFromGallery);
-        Button cancelImageFromGallery= findViewById(R.id.cancelImageFromGallery);
-        LinearLayout galleryPreviewButtons= findViewById(R.id.galleryPreviewButtons);
+        Button saveImageFromGallery = findViewById(R.id.saveImageFromGallery);
+        Button cancelImageFromGallery = findViewById(R.id.cancelImageFromGallery);
+        LinearLayout galleryPreviewButtons = findViewById(R.id.galleryPreviewButtons);
         ImageButton btnTogglePersonal = findViewById(R.id.btnTogglePersonal);
         ImageButton btnToggleClothing = findViewById(R.id.btnToggleClothing);
         ImageButton btnToggleTech = findViewById(R.id.btnToggleTech);
@@ -105,6 +107,9 @@ public class MainActivity extends BaseActivity {
         }
         if (Repositories.getLostRepo().needsLoading()) {
             firestoreService.getItems(LostItem.class, Repositories.getLostRepo()::setItems);
+        }
+        if (Repositories.getMatchRepo().needsLoading()) {
+            firestoreService.getAllMatches(Repositories.getMatchRepo()::setMatches);
         }
 
         setSupportActionBar(toolbar);
@@ -138,8 +143,6 @@ public class MainActivity extends BaseActivity {
         // Upload button click
         uploadButton.setOnClickListener(v -> uploadImageFromGallery());
 
-//        showImageFromUrl("https://firebasestorage.googleapis.com/v0/b/finderlog-1f757.firebasestorage.app/o/uploads%2Fd64ab902-af62-4059-a434-d1718be44717.?alt=media&token=b3d43cff-2ef1-499a-b4c4-e82e1ac638f0");
-
         // camera opening code:
         previewView.setVisibility(View.GONE);
         btnCapture.setVisibility(View.GONE);
@@ -160,7 +163,8 @@ public class MainActivity extends BaseActivity {
         });
 
         // Capture button click listener
-        btnCapture.setOnClickListener(v -> cameraHelper.takePhoto(() -> {}));
+        btnCapture.setOnClickListener(v -> cameraHelper.takePhoto(() -> {
+        }));
 
         btnCloseCamera.setOnClickListener(v -> {
             previewView.setVisibility(View.GONE);
@@ -281,6 +285,7 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
     }
+
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -310,6 +315,7 @@ public class MainActivity extends BaseActivity {
         }
         return true;
     }
+
     public void showCameraImagePreview(Bitmap bitmap) {
         findViewById(R.id.btnCapture).setVisibility(View.GONE);
         findViewById(R.id.btnCloseCamera).setVisibility(View.GONE);
@@ -330,6 +336,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.cardAddReport).setVisibility(View.GONE);
         this.bitmapToProcess = bitmap;
     }
+
     private void submitLostItemReport() {
         EditText etTitle = findViewById(R.id.etTitle);
         EditText etClientName = findViewById(R.id.etClientName);
@@ -360,10 +367,14 @@ public class MainActivity extends BaseActivity {
             return;
         }
         // Create LostItem object and add to FireStore
-        LostItem lostItem = new LostItem(clientName, clientPhone, description, "open",title, lostDate, new Date());
+        LostItem lostItem = new LostItem(clientName, clientPhone, description, "open", title, lostDate, new Date());
         firestoreService.addItem(lostItem);
         // Add the item to the repository
         Repositories.getLostRepo().addItem(lostItem);
+
+        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(firestoreService);
+        new Thread(() -> matchAlgorithm.startMatchingThread(matchAlgorithm.convertToList(description), lostItem)).start();
+
         // Show popup message
         View rootView = findViewById(android.R.id.content);
         Snackbar snackbar = Snackbar.make(rootView, "Report submitted!", Snackbar.LENGTH_SHORT);
@@ -381,10 +392,11 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
         findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
     }
+
     private String getSelectedItemsDescription() {
         StringBuilder selectedItems = new StringBuilder();
 
-        int[] categoryContainerIds = new int[] {
+        int[] categoryContainerIds = new int[]{
                 R.id.personalItemsContainer,
                 R.id.techItemsContainer,
                 R.id.otherItemsContainer
@@ -411,6 +423,7 @@ public class MainActivity extends BaseActivity {
 
         return selectedItems.toString();
     }
+
     private void toggleScrollAndIcon(View scrollView, ImageButton button, int iconOnResId, int iconOffResId) {
         boolean isVisible = scrollView.getVisibility() == View.VISIBLE;
         if (isVisible) {

@@ -1,4 +1,4 @@
-package com.havah_avihaim_emanuelm.finderlog.adapters;
+package com.havah_avihaim_emanuelm.finderlog.adapters.Item;
 
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
 
@@ -9,6 +9,7 @@ import java.util.List;
 public class ItemRepository {
     private final List<Item> cachedItems = new ArrayList<>();
     private boolean needsLoading = true;
+
     public boolean needsLoading() {
         return needsLoading;
     }
@@ -45,4 +46,7 @@ public class ItemRepository {
         return cachedItems.size();
     }
 
+    public List<Item> getCachedItems() {
+        return cachedItems;
+    }
 }
