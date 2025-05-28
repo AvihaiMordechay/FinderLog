@@ -29,12 +29,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     private final OnItemListChangedListener listChangedListener;
 
+    private boolean showDeleteButton = true;
+
     public interface OnItemListChangedListener {
         void onListChanged();
     }
-    public ItemAdapter(ItemRepository repository, OnItemListChangedListener listener) {
+    public ItemAdapter(ItemRepository repository, OnItemListChangedListener listener,boolean showDeleteButton) {
         this.repository = repository;
         this.listChangedListener = listener;
+        this.showDeleteButton = showDeleteButton;
     }
 
 
@@ -47,6 +50,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         View expandedLayout;
         View deleteButton;
         int type;
+
 
         public ViewHolder(View view, int type) {
             super(view);
@@ -68,9 +72,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 expandedLayout = view.findViewById(R.id.expandedLayout);
             }
         }
-
         public void bind(Item item, int position, ItemRepository repository,
-                         RecyclerView.Adapter adapter, OnItemListChangedListener listChangedListener) {
+                         RecyclerView.Adapter adapter, OnItemListChangedListener listChangedListener,boolean showDeleteButton) {
             title.setText(item.getTitle());
             String desc = item.getDescription();
             description.setText((desc == null || desc.isEmpty()) ? "No description available." : desc);
@@ -96,18 +99,20 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 itemView.setOnClickListener(v ->
                         expandedLayout.setVisibility(expandedLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE));
 
-                // Delete button
-                deleteButton.setOnClickListener(v -> {
-                    repository.removeItemAt(position);
-                    adapter.notifyItemRemoved(position);
-                    firestoreService.deleteLostItemFromMatches(lostItem);
-                    firestoreService.deleteItem(LostItem.class ,lostItem.getId());
-                    getMatchRepo().removeLostItem(lostItem);
-                    if (repository.getSize() == 0 && listChangedListener != null) {
-                        listChangedListener.onListChanged();
-                    }
+                if (showDeleteButton) {
+                    deleteButton.setVisibility(View.VISIBLE);
+                    deleteButton.setOnClickListener(v -> {
+                        repository.removeItemAt(position);
+                        adapter.notifyItemRemoved(position);
+                        firestoreService.deleteLostItemFromMatches(lostItem);
+                        firestoreService.deleteItem(LostItem.class, lostItem.getId());
+                        getMatchRepo().removeLostItem(lostItem);
+                        if (repository.getSize() == 0 && listChangedListener != null) {
+                            listChangedListener.onListChanged();
+                        }
 
-                });
+                    });
+                }
             }
         }
     }
@@ -135,11 +140,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(repository.getItemAt(position), position, repository, this, listChangedListener);
+        holder.bind(repository.getItemAt(position), position, repository, this, listChangedListener,showDeleteButton);
     }
 
     @Override
     public int getItemCount() {
         return repository.getSize();
     }
+
 }

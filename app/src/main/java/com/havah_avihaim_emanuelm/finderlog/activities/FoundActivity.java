@@ -28,7 +28,7 @@ public class FoundActivity extends BaseActivity {
         ItemRepository foundRepo = Repositories.getFoundRepo();
         updateEmptyState(recyclerView, foundRepo.getSize()==0);
         ItemAdapter adapter = new ItemAdapter(foundRepo,
-                () -> updateEmptyState(recyclerView,foundRepo.getSize()==0));
+                () -> updateEmptyState(recyclerView,foundRepo.getSize()==0),true);
         recyclerView.setAdapter(adapter);
 
     }

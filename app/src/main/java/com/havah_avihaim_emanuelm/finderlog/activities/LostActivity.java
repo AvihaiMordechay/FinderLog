@@ -29,7 +29,7 @@ public class LostActivity extends BaseActivity {
         ItemRepository lostRepo = Repositories.getLostRepo();
         updateEmptyState(recyclerView, lostRepo.getSize()==0);
         ItemAdapter adapter = new ItemAdapter(lostRepo,
-                () -> updateEmptyState(recyclerView,lostRepo.getSize()==0));
+                () -> updateEmptyState(recyclerView,lostRepo.getSize()==0),true);
         recyclerView.setAdapter(adapter);
 
     }

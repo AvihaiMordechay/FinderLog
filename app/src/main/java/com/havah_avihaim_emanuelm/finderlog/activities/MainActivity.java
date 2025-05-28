@@ -185,8 +185,16 @@ public class MainActivity extends BaseActivity {
             lostItemForm.setVisibility(View.VISIBLE);
         });
         btnCancelLostItem.setOnClickListener(v -> {
+            // clean the form:
+            ((EditText) findViewById(R.id.etTitle)).setText("");
+            ((EditText) findViewById(R.id.etClientName)).setText("");
+            ((EditText) findViewById(R.id.etClientPhone)).setText("");
+            ((EditText) findViewById(R.id.etLostDate)).setText("");
+            clearAllCheckboxes();
+            closeAllCategoryScrolls();
             // Close Form
             lostItemForm.setVisibility(View.GONE);
+
             // Show buttons:
             uploadButton.setVisibility(View.VISIBLE);
             btnAddReport.setVisibility(View.VISIBLE);
@@ -392,14 +400,25 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
         findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
     }
+    private void closeAllCategoryScrolls() {
+        findViewById(R.id.personalItemsScroll).setVisibility(View.GONE);
+        findViewById(R.id.clothingDetailsScroll).setVisibility(View.GONE);
+        findViewById(R.id.techItemsScroll).setVisibility(View.GONE);
+        findViewById(R.id.otherItemsScroll).setVisibility(View.GONE);
 
+        ((ImageButton) findViewById(R.id.btnTogglePersonal)).setImageResource(R.drawable.switch_off);
+        ((ImageButton) findViewById(R.id.btnToggleClothing)).setImageResource(R.drawable.switch_off);
+        ((ImageButton) findViewById(R.id.btnToggleTech)).setImageResource(R.drawable.switch_off);
+        ((ImageButton) findViewById(R.id.btnToggleOther)).setImageResource(R.drawable.switch_off);
+    }
     private String getSelectedItemsDescription() {
         StringBuilder selectedItems = new StringBuilder();
 
         int[] categoryContainerIds = new int[]{
                 R.id.personalItemsContainer,
                 R.id.techItemsContainer,
-                R.id.otherItemsContainer
+                R.id.otherItemsContainer,
+                R.id.clothingDetailsContainer
         };
 
         for (int containerId : categoryContainerIds) {
@@ -422,6 +441,27 @@ public class MainActivity extends BaseActivity {
         }
 
         return selectedItems.toString();
+    }
+    private void clearAllCheckboxes() {
+        int[] categoryContainerIds = new int[]{
+                R.id.personalItemsContainer,
+                R.id.techItemsContainer,
+                R.id.otherItemsContainer,
+                R.id.clothingDetailsContainer
+        };
+
+        for (int containerId : categoryContainerIds) {
+            LinearLayout container = findViewById(containerId);
+            if (container != null) {
+                int childCount = container.getChildCount();
+                for (int i = 0; i < childCount; i++) {
+                    View child = container.getChildAt(i);
+                    if (child instanceof CheckBox) {
+                        ((CheckBox) child).setChecked(false);
+                    }
+                }
+            }
+        }
     }
 
     private void toggleScrollAndIcon(View scrollView, ImageButton button, int iconOnResId, int iconOffResId) {
