@@ -23,7 +23,7 @@ public class FirestoreService {
     /**
      * Items:
      */
-    public void addItem(Item item) {
+    public void addItem(Item item,  Listener<Item> callback) {
         String collection = getCollectionName(item);
         db.collection(collection)
                 .add(item)
@@ -32,6 +32,7 @@ public class FirestoreService {
                     item.setId(id);
                     docRef.update("id", id);
                     Log.d("Firestore", "Item added to " + collection + ": " + id);
+                    callback.onResult(item);
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error adding item", e);

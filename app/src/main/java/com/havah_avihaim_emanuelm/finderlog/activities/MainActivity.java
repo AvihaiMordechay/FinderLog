@@ -1,5 +1,7 @@
 package com.havah_avihaim_emanuelm.finderlog.activities;
 
+import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getLostRepo;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,6 +11,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.content.pm.PackageManager;
@@ -47,8 +50,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
+
 
 public class MainActivity extends BaseActivity {
+    public static final String CHANNEL_ID = "finderlog_channel";
+    private static final CharSequence CHANNEL_NAME = "FinderLog Notifications";
+    private static final String CHANNEL_DESC = "Notifications for found/lost item updates";
+    public static final int REQUEST_NOTIFICATION_PERMISSION = 1;
     private DrawerLayout drawerLayout;
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{
@@ -105,8 +116,8 @@ public class MainActivity extends BaseActivity {
         if (Repositories.getFoundRepo().needsLoading()) {
             firestoreService.getItems(FoundItem.class, Repositories.getFoundRepo()::setItems);
         }
-        if (Repositories.getLostRepo().needsLoading()) {
-            firestoreService.getItems(LostItem.class, Repositories.getLostRepo()::setItems);
+        if (getLostRepo().needsLoading()) {
+            firestoreService.getItems(LostItem.class, getLostRepo()::setItems);
         }
         if (Repositories.getMatchRepo().needsLoading()) {
             firestoreService.getAllMatches(Repositories.getMatchRepo()::setMatches);
@@ -261,7 +272,17 @@ public class MainActivity extends BaseActivity {
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         });
 
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_NOTIFICATION_PERMISSION
+                );
+            }
+        }
+        createNotificationChannel();
     }
 
     private AlertDialog.Builder buildAboutDialog(Context context) {
@@ -376,12 +397,11 @@ public class MainActivity extends BaseActivity {
         }
         // Create LostItem object and add to FireStore
         LostItem lostItem = new LostItem(clientName, clientPhone, description, "open", title, lostDate, new Date());
-        firestoreService.addItem(lostItem);
-        // Add the item to the repository
-        Repositories.getLostRepo().addItem(lostItem);
-
-        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(firestoreService);
-        new Thread(() -> matchAlgorithm.startMatchingThread(matchAlgorithm.convertToList(description), lostItem)).start();
+        firestoreService.addItem(lostItem, item -> {
+            getLostRepo().addItem(item);
+            MatchAlgorithm matchAlgorithm = new MatchAlgorithm(firestoreService, this);
+            new Thread(() -> matchAlgorithm.startMatchingThread(matchAlgorithm.convertToList(description), lostItem)).start();
+        });
 
         // Show popup message
         View rootView = findViewById(android.R.id.content);
@@ -396,10 +416,14 @@ public class MainActivity extends BaseActivity {
         ScrollView lostItemForm = findViewById(R.id.lostItemForm);
         lostItemForm.setVisibility(View.GONE);
 
+        clearAllCheckboxes();
+        closeAllCategoryScrolls();
+
         findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
         findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
     }
+
     private void closeAllCategoryScrolls() {
         findViewById(R.id.personalItemsScroll).setVisibility(View.GONE);
         findViewById(R.id.clothingDetailsScroll).setVisibility(View.GONE);
@@ -411,6 +435,7 @@ public class MainActivity extends BaseActivity {
         ((ImageButton) findViewById(R.id.btnToggleTech)).setImageResource(R.drawable.switch_off);
         ((ImageButton) findViewById(R.id.btnToggleOther)).setImageResource(R.drawable.switch_off);
     }
+
     private String getSelectedItemsDescription() {
         StringBuilder selectedItems = new StringBuilder();
 
@@ -442,6 +467,7 @@ public class MainActivity extends BaseActivity {
 
         return selectedItems.toString();
     }
+
     private void clearAllCheckboxes() {
         int[] categoryContainerIds = new int[]{
                 R.id.personalItemsContainer,
@@ -475,4 +501,16 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void createNotificationChannel() {
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription(CHANNEL_DESC);
+        channel.enableLights(true);
+        channel.enableVibration(true);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 }

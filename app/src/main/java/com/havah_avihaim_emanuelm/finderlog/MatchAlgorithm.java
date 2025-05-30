@@ -1,5 +1,6 @@
 package com.havah_avihaim_emanuelm.finderlog;
 
+import static com.havah_avihaim_emanuelm.finderlog.activities.MainActivity.CHANNEL_ID;
 import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getFoundRepo;
 import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getLostRepo;
 import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getMatchRepo;
@@ -8,8 +9,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
@@ -25,8 +31,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MatchAlgorithm {
-
-    private Context context;
+    private static final String POST_NOTIFICATIONS = "android.permission.POST_NOTIFICATIONS";
+    private final Context context;
     private final FirestoreService firestoreService;
     private String mimeType;
     private Runnable onComplete;
@@ -42,8 +48,9 @@ public class MatchAlgorithm {
         registerReceiver();
     }
 
-    public MatchAlgorithm(FirestoreService firestoreService) {
+    public MatchAlgorithm(FirestoreService firestoreService, Context context) {
         this.firestoreService = firestoreService;
+        this.context = context;
     }
 
 
@@ -60,16 +67,17 @@ public class MatchAlgorithm {
 
             if (imageUri != null) {
                 FoundItem foundItem = new FoundItem(imgTitle, imageUri, mimeType, labels);
-                firestoreService.addItem(foundItem);
-                getFoundRepo().addItem(foundItem);
+                firestoreService.addItem(foundItem, item -> {
+                    getFoundRepo().addItem(item);
+                    if (labels == null) return;
+                    new Thread(() -> startMatchingThread(convertToList(labels), imageUri)).start();
+                });
                 Toast.makeText(context, "Image uploaded and processed successfully", Toast.LENGTH_SHORT).show();
 
                 if (onComplete != null) {
                     onComplete.run();
                 }
 
-                if (labels == null) return;
-                new Thread(() -> startMatchingThread(convertToList(labels), imageUri)).start();
 
                 // Once done, unregister receiver
                 context.unregisterReceiver(this);
@@ -79,27 +87,37 @@ public class MatchAlgorithm {
         }
     };
 
+    // For adding adding image
     private void startMatchingThread(List<String> labels, String imageUri) {
         List<Item> lostItems = getLostRepo().getCachedItems();
         List<LostItem> matchLostItems = new ArrayList<>();
         Match match = new Match(imageUri, this.imgTitle);
+        boolean hasMatch = false;
+        int matchesCount = 0;
 
         for (Item item : lostItems) {
             List<String> itemDescription = convertToList(item.getDescription());
             for (String word : itemDescription) {
                 if (labels.contains(word)) {
                     matchLostItems.add((LostItem) item);
+                    hasMatch = true;
+                    matchesCount++;
                     break;
                 }
             }
         }
         match.setLostItems(matchLostItems);
-        firestoreService.addMatch(match);
+        if (hasMatch) {
+            firestoreService.addMatch(match);
+            MatchNotification("Match Found", matchesCount + " matches found for " + this.imgTitle + " image");
+        }
     }
 
+    // For adding new report
     public void startMatchingThread(List<String> labels, LostItem lostItem) {
         List<Item> foundItems = getFoundRepo().getCachedItems();
         List<Match> matches = getMatchRepo().getMatches();
+        int matchesCount = 0;
 
 
         for (Item foundItem : foundItems) {
@@ -135,13 +153,35 @@ public class MatchAlgorithm {
                     getMatchRepo().addMatch(newMatch);
                     firestoreService.addMatch(newMatch);
                 }
+                matchesCount++;
             }
         }
-
+        if (matchesCount > 0) {
+            MatchNotification("Match Found", matchesCount + " matches found for report " + lostItem.getTitle());
+        }
         // Optional callback
         if (onComplete != null) {
             onComplete.run();
         }
+    }
+
+    private void MatchNotification(String title, String message) {
+        int notifyId = (int) System.currentTimeMillis();
+
+        if (Build.VERSION.SDK_INT >= 33 &&
+                ContextCompat.checkSelfPermission(context, POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.our_alert)
+                        .setContentTitle(title)
+                        .setContentText(message)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+
+        NotificationManagerCompat.from(context).notify(notifyId, builder.build());
     }
 
 
