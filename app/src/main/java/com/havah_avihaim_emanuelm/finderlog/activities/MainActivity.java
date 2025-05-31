@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.content.pm.PackageManager;
@@ -52,14 +51,12 @@ import java.util.Locale;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.os.Build;
 
 
 public class MainActivity extends BaseActivity {
     public static final String CHANNEL_ID = "finderlog_channel";
     private static final CharSequence CHANNEL_NAME = "FinderLog Notifications";
     private static final String CHANNEL_DESC = "Notifications for found/lost item updates";
-    public static final int REQUEST_NOTIFICATION_PERMISSION = 1;
     private DrawerLayout drawerLayout;
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{
@@ -272,16 +269,16 @@ public class MainActivity extends BaseActivity {
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        REQUEST_NOTIFICATION_PERMISSION
-                );
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+//                    != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(
+//                        this,
+//                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+//                        REQUEST_NOTIFICATION_PERMISSION
+//                );
+//            }
+//        }
         createNotificationChannel();
     }
 

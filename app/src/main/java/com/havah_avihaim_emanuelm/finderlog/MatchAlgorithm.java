@@ -11,9 +11,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -27,6 +27,7 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningServi
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,7 +96,13 @@ public class MatchAlgorithm {
         boolean hasMatch = false;
         int matchesCount = 0;
 
+        Calendar startDate = getStartDate();
         for (Item item : lostItems) {
+            if (!(item instanceof LostItem)) continue;
+
+            LostItem lostItem = (LostItem) item;
+            if (startDate != null && lostItem.getLostDate().before(startDate.getTime())) continue;
+
             List<String> itemDescription = convertToList(item.getDescription());
             for (String word : itemDescription) {
                 if (labels.contains(word)) {
@@ -119,8 +126,18 @@ public class MatchAlgorithm {
         List<Match> matches = getMatchRepo().getMatches();
         int matchesCount = 0;
 
+        Calendar startDate = getStartDate();
+        if (startDate != null && lostItem.getLostDate().before(startDate.getTime())){
+            Log.d("lost", "Lost item skipped due to old date: " + lostItem.getTitle());
+            return;
+        }
 
         for (Item foundItem : foundItems) {
+            if (!(foundItem instanceof FoundItem)) continue;
+
+            FoundItem fi = (FoundItem) foundItem;
+            if (startDate != null && fi.getFoundDate().before(startDate.getTime())) continue;
+
             List<String> foundDescription = convertToList(foundItem.getDescription());
 
             // Check for any overlapping label
@@ -166,6 +183,11 @@ public class MatchAlgorithm {
     }
 
     private void MatchNotification(String title, String message) {
+
+        boolean notificationsEnabled = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+                .getBoolean("notifications_enabled", false);
+        if (!notificationsEnabled) return;
+
         int notifyId = (int) System.currentTimeMillis();
 
         if (Build.VERSION.SDK_INT >= 33 &&
@@ -191,4 +213,25 @@ public class MatchAlgorithm {
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
     }
+
+    private Calendar getStartDate() {
+        int selectedRange = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+                .getInt("selected_range", 0); // 0 = month, 1 = 3 months, 2 = year
+
+        Calendar cal = Calendar.getInstance();
+        switch (selectedRange) {
+            case 0: cal.add(Calendar.MONTH, -1); break;
+            case 1: cal.add(Calendar.MONTH, -3); break;
+            case 2: cal.add(Calendar.YEAR, -1); break;
+            default: return null;
+        }
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal;
+    }
+
+
 }
