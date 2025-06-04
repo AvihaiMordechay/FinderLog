@@ -144,7 +144,6 @@ public class CameraHelper {
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
                 new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage, imageTitle);
-
                 Intent intent = new Intent(context, MachineLearningService.class);
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
                 intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);

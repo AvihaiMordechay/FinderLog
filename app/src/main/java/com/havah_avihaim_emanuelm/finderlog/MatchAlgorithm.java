@@ -88,7 +88,7 @@ public class MatchAlgorithm {
         }
     };
 
-    // For adding adding image
+    // For adding new Image
     private void startMatchingThread(List<String> labels, String imageUri) {
         List<Item> lostItems = getLostRepo().getCachedItems();
         List<LostItem> matchLostItems = new ArrayList<>();
@@ -98,6 +98,7 @@ public class MatchAlgorithm {
 
         Calendar startDate = getStartDate();
         for (Item item : lostItems) {
+            // It will always be a LostItem, but the compiler doesn't know that
             if (!(item instanceof LostItem)) continue;
 
             LostItem lostItem = (LostItem) item;
@@ -116,6 +117,7 @@ public class MatchAlgorithm {
         match.setLostItems(matchLostItems);
         if (hasMatch) {
             firestoreService.addMatch(match);
+            getMatchRepo().addMatch(match);
             MatchNotification("Match Found", matchesCount + " matches found for " + this.imgTitle + " image");
         }
     }
