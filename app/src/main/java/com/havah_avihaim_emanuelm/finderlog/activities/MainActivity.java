@@ -4,6 +4,7 @@ import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getLost
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -46,11 +47,13 @@ import com.havah_avihaim_emanuelm.finderlog.camera.CameraHelper;
 import com.havah_avihaim_emanuelm.finderlog.camera.GalleryHelper;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.widget.TextView;
 
 
 public class MainActivity extends BaseActivity {
@@ -67,11 +70,17 @@ public class MainActivity extends BaseActivity {
 
     private GalleryHelper galleryHelper;
     private Bitmap bitmapToProcess;
+    private SimpleDateFormat sdf;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+
+
         // Variables Start:
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewReports);
         setupBottomNavigation(bottomNavigationView, R.id.nav_reports);
@@ -126,6 +135,32 @@ public class MainActivity extends BaseActivity {
         window.setStatusBarColor(Color.TRANSPARENT);
         toolbar.setNavigationIcon(R.drawable.dots);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        TextView tvLostDate = findViewById(R.id.etLostDate);
+        String today = sdf.format(new Date());
+        tvLostDate.setText(today);
+
+        tvLostDate.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    MainActivity.this,
+                    (view, selectedYear, selectedMonth, selectedDay) -> {
+                        Calendar pickedCal = Calendar.getInstance();
+                        pickedCal.set(selectedYear, selectedMonth, selectedDay);
+                        String formattedDate = sdf.format(pickedCal.getTime());
+                        tvLostDate.setText(formattedDate);
+                    },
+                    year, month, day
+            );
+            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            datePickerDialog.show();
+        });
+
+
 
         // Drawer item handling
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -197,7 +232,7 @@ public class MainActivity extends BaseActivity {
             ((EditText) findViewById(R.id.etTitle)).setText("");
             ((EditText) findViewById(R.id.etClientName)).setText("");
             ((EditText) findViewById(R.id.etClientPhone)).setText("");
-            ((EditText) findViewById(R.id.etLostDate)).setText("");
+            ((TextView) findViewById(R.id.etLostDate)).setText("No date selected");
             clearAllCheckboxes();
             closeAllCategoryScrolls();
             // Close Form
@@ -367,7 +402,7 @@ public class MainActivity extends BaseActivity {
         EditText etTitle = findViewById(R.id.etTitle);
         EditText etClientName = findViewById(R.id.etClientName);
         EditText etClientPhone = findViewById(R.id.etClientPhone);
-        EditText etLostDate = findViewById(R.id.etLostDate);
+        TextView etLostDate = findViewById(R.id.etLostDate);
 
         String title = etTitle.getText().toString().trim();
         String clientName = etClientName.getText().toString().trim();
@@ -382,14 +417,11 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
+
         Date lostDate;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             lostDate = sdf.parse(lostDateStr);
         } catch (Exception e) {
-            View rootView = findViewById(android.R.id.content);
-            Snackbar snackbar = Snackbar.make(rootView, "Invalid date format. Use yyyy-MM-dd", Snackbar.LENGTH_SHORT);
-            snackbar.show();
             return;
         }
         // Create LostItem object and add to FireStore

@@ -439,11 +439,39 @@
                         </LinearLayout>
                     </HorizontalScrollView>
 
-                    <EditText
-                        android:id="@+id/etLostDate"
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Lost Date (yyyy-MM-dd)" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/tvEnterDateLabel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Lost date:"
+                            android:textSize="14sp"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            android:id="@+id/etLostDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:minWidth="80dp"
+                            android:minHeight="48dp"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:text="No date selected"
+                            android:textColor="#009688"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="24dp" />
