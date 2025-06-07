@@ -19,7 +19,6 @@ import com.havah_avihaim_emanuelm.finderlog.matches.Match;
 import java.util.List;
 
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHolder> {
-
     private final List<Match> matchList;
     private final Context context;
 
@@ -79,4 +78,5 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
             lostItemsRecycler = itemView.findViewById(R.id.lostItemsContainer);
         }
     }
+
 }

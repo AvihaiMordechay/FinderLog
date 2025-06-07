@@ -58,10 +58,6 @@ public class GalleryHelper {
         }
     }
 
-    public Uri getPendingImageUri() {
-        return pendingImageUri;
-    }
-
     public void confirmAndUploadImage(String imageTitle) {
         if (pendingImageUri == null) {
             Log.e("CameraX", "No photo to upload:");
@@ -81,9 +77,9 @@ public class GalleryHelper {
         });
     }
 
-
     public void clearPendingImage() {
         pendingImageUri = null;
         pendingMimeType = null;
     }
+
 }

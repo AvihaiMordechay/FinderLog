@@ -40,7 +40,6 @@ public class CameraHelper {
     private final FirestoreService firestoreService;
     private Uri pendingImageUri;
     private String pendingMimeType;
-    private Runnable onReadyToDisplay;
 
     public CameraHelper(Context context, PreviewView previewView, StorageService storageService,
                         FirestoreService firestoreService, MachineLearningService machineLearningService) {
@@ -88,8 +87,6 @@ public class CameraHelper {
         ImageCapture.OutputFileOptions outputOptions =
                 new ImageCapture.OutputFileOptions.Builder(photoFile).build();
 
-        this.onReadyToDisplay = onReadyToDisplay;
-
         imageCapture.takePicture(
                 outputOptions,
                 ContextCompat.getMainExecutor(context),
@@ -127,10 +124,6 @@ public class CameraHelper {
             return mediaDir;
         else
             return context.getFilesDir();
-    }
-
-    public Uri getPendingImageUri() {
-        return pendingImageUri;
     }
 
     public void confirmAndUploadImage(String imageTitle) {

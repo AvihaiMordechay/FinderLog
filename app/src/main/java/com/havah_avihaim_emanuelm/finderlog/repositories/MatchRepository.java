@@ -25,19 +25,6 @@ public class MatchRepository {
         matches.add(0, match);
     }
 
-    public void removeMatchAt(int position) {
-        if (position >= 0 && position < matches.size()) {
-            matches.remove(position);
-        }
-    }
-
-    public Match getMatchAt(int position) {
-        if (position >= 0 && position < matches.size()) {
-            return matches.get(position);
-        }
-        return null;
-    }
-
     public void addLostItem(LostItem lostItem, Match matchInstance) {
         for (Match match : matches) {
             if (match == matchInstance) {
@@ -54,16 +41,8 @@ public class MatchRepository {
 
     }
 
-    public int getSize() {
-        return matches.size();
-    }
-
     public List<Match> getMatches() {
         return matches;
     }
 
-    public void clear() {
-        matches.clear();
-        needsLoading = true;
-    }
 }

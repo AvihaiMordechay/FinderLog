@@ -18,6 +18,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected static final FirestoreService firestoreService = FirestoreService.getSharedInstance();
     protected static final StorageService storageService = new StorageService();
     protected static final MachineLearningService  machineLearningService = new MachineLearningService();
+
     protected void setupBottomNavigation(BottomNavigationView bottomNavigationView, int currentItemId) {
         bottomNavigationView.setSelectedItemId(currentItemId);
 
@@ -61,6 +62,5 @@ public abstract class BaseActivity extends AppCompatActivity {
             recyclerView.setContentDescription(null);
         }
     }
-
 
 }

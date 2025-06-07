@@ -20,38 +20,30 @@ import com.havah_avihaim_emanuelm.finderlog.items.Item;
 import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
-
     private static final int TYPE_FOUND = 0;
     private static final int TYPE_LOST = 1;
-
     private final ItemRepository repository;
-
     protected static final FirestoreService firestoreService = FirestoreService.getSharedInstance();
-
     private final OnItemListChangedListener listChangedListener;
+    private boolean showDeleteButton;
 
-    private boolean showDeleteButton = true;
-
-    public interface OnItemListChangedListener {
-        void onListChanged();
-    }
     public ItemAdapter(ItemRepository repository, OnItemListChangedListener listener,boolean showDeleteButton) {
         this.repository = repository;
         this.listChangedListener = listener;
         this.showDeleteButton = showDeleteButton;
     }
 
-
+    public interface OnItemListChangedListener {
+        void onListChanged();
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, description, status, reportDate;
         ImageView imageView; // Only for FoundItem
-
         TextView clientName, clientPhone, lostDate;
         View expandedLayout;
         View deleteButton;
         int type;
-
 
         public ViewHolder(View view, int type) {
             super(view);
@@ -73,6 +65,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 expandedLayout = view.findViewById(R.id.expandedLayout);
             }
         }
+
         public void bind(Item item, int position, ItemRepository repository,
                          RecyclerView.Adapter adapter, OnItemListChangedListener listChangedListener,boolean showDeleteButton) {
             title.setText(item.getTitle());

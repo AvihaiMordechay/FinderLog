@@ -30,17 +30,8 @@ public class LostItem implements Item {
         return clientName;
     }
 
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
     public String getClientPhone() {
         return clientPhone;
-    }
-
-    public void setClientPhone(String clientPhone) {
-        this.clientPhone = clientPhone;
     }
 
     @Override
@@ -52,17 +43,10 @@ public class LostItem implements Item {
     public void setId(String id) {
         this.id = id;
     }
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     @Override
     public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getTitle() {
@@ -77,16 +61,8 @@ public class LostItem implements Item {
         return lostDate;
     }
 
-    public void setLostDate(Date lostDate) {
-        this.lostDate = lostDate;
-    }
-
     public Date getReportDate() {
         return reportDate;
-    }
-
-    public void setReportDate(Date reportDate) {
-        this.reportDate = reportDate;
     }
 
     @Override

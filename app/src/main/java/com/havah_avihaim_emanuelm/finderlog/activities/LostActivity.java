@@ -12,8 +12,6 @@ import com.havah_avihaim_emanuelm.finderlog.repositories.ItemRepository;
 import com.havah_avihaim_emanuelm.finderlog.repositories.Repositories;
 
 public class LostActivity extends BaseActivity {
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,4 +31,5 @@ public class LostActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
 
     }
+
 }

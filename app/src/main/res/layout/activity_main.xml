@@ -15,24 +15,26 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="0dp"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
+            android:layout_height="72dp"
+            android:paddingTop="9dp"
+            android:background="#673AB7"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <LinearLayout
             android:id="@+id/cardContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
             android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewReports"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintWidth_percent="0.8">
 
             <!-- Open Camera Card -->
@@ -55,18 +57,18 @@
                         android:id="@+id/imageCamera"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/camera"
                         android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/camera" />
 
                     <TextView
                         android:id="@+id/textOpenCamera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:text="Open Camera"
-                        android:textSize="18sp"
                         android:textColor="@android:color/black"
-                        android:layout_centerInParent="true" />
+                        android:textSize="18sp" />
 
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -92,18 +94,18 @@
                         android:id="@+id/imageGallery"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/gallery"
                         android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/gallery" />
 
                     <TextView
                         android:id="@+id/textUploadImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:text="Upload Image"
                         android:textColor="@android:color/black"
-                        android:textSize="18sp"
-                        android:layout_centerInParent="true" />
+                        android:textSize="18sp" />
 
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -127,18 +129,18 @@
                         android:id="@+id/imageReportForm"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/report_form"
                         android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/report_form" />
 
                     <TextView
                         android:id="@+id/textAddReport"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:text="Add Report"
-                        android:textSize="18sp"
                         android:textColor="@android:color/black"
-                        android:layout_centerInParent="true" />
+                        android:textSize="18sp" />
 
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -150,61 +152,61 @@
             android:id="@+id/previewView"
             android:layout_width="0dp"
             android:layout_height="400dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="16dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/btnCapture"
-            android:visibility="gone" /> <!-- Initially hidden -->
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" /> <!-- Initially hidden -->
         <!--   Capture Image button    -->
         <Button
             android:id="@+id/btnCapture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Capture"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="200dp"
-            android:visibility="gone" /> <!-- Initially hidden -->
+            android:text="Capture"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" /> <!-- Initially hidden -->
 
         <!--   Close Camera button    -->
         <ImageButton
             android:id="@+id/btnCloseCamera"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/baseline_close_24"
+            android:layout_margin="8dp"
             android:background="@android:color/transparent"
             android:contentDescription="Close Camera"
+            android:src="@drawable/baseline_close_24"
             android:visibility="gone"
-            android:layout_margin="8dp"
-            app:layout_constraintTop_toTopOf="@id/previewView"
-            app:layout_constraintStart_toStartOf="@id/previewView" />
+            app:layout_constraintStart_toStartOf="@id/previewView"
+            app:layout_constraintTop_toTopOf="@id/previewView" />
 
         <!--   Report Form View  -->
         <ScrollView
             android:id="@+id/lostItemForm"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
             android:fillViewport="true"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            android:padding="16dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewReports"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="16dp">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/etTitle"
@@ -222,23 +224,23 @@
                         android:id="@+id/etClientPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="phone"
-                        android:hint="Client Phone" />
+                        android:hint="Client Phone"
+                        android:inputType="phone" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
                         android:text="Select item categories:"
-                        android:textStyle="bold"
-                        android:layout_marginTop="2dp" />
+                        android:textStyle="bold" />
 
                     <!-- Personal Items Header -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp"
                         android:gravity="center_vertical"
-                        android:layout_marginTop="4dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="0dp"
@@ -251,10 +253,10 @@
                             android:layout_width="85dp"
                             android:layout_height="50dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/switch_off"
                             android:contentDescription="Toggle Personal Items"
+                            android:padding="4dp"
                             android:scaleType="fitCenter"
-                            android:padding="4dp" />
+                            android:src="@drawable/switch_off" />
 
                     </LinearLayout>
 
@@ -271,13 +273,41 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Handbag" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bag" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Passport" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Toy" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Money" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lego" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cap" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Handbag" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bag" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Passport" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Toy" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Money" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lego" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Cap" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -286,9 +316,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp"
                         android:gravity="center_vertical"
-                        android:layout_marginTop="4dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="0dp"
@@ -301,10 +331,10 @@
                             android:layout_width="85dp"
                             android:layout_height="50dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/switch_off"
                             android:contentDescription="Toggle Personal Items"
+                            android:padding="4dp"
                             android:scaleType="fitCenter"
-                            android:padding="4dp" />
+                            android:src="@drawable/switch_off" />
                     </LinearLayout>
 
                     <HorizontalScrollView
@@ -320,24 +350,96 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Clock" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Necklace" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bracelet" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jewellery" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chain" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Shorts" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dress" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jeans" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Swimwear" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hat" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Scarf" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jacket" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Outerwear" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Shoe" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sneakers" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ring" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sunglasses" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tie" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Clock" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Necklace" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bracelet" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Jewellery" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Chain" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Shorts" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Dress" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Jeans" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Swimwear" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hat" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Scarf" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Jacket" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Outerwear" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Shoe" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sneakers" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ring" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sunglasses" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tie" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -346,9 +448,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp"
                         android:gravity="center_vertical"
-                        android:layout_marginTop="4dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="0dp"
@@ -361,10 +463,10 @@
                             android:layout_width="85dp"
                             android:layout_height="50dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/switch_off"
                             android:contentDescription="Toggle Personal Items"
+                            android:padding="4dp"
                             android:scaleType="fitCenter"
-                            android:padding="4dp" />
+                            android:src="@drawable/switch_off" />
                     </LinearLayout>
 
                     <HorizontalScrollView
@@ -381,11 +483,30 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mobile phone" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Computer" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Musical instrument" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Goggles" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Glasses" />
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Mobile phone" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Computer" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Musical instrument" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Goggles" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Glasses" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -394,9 +515,9 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp"
                         android:gravity="center_vertical"
-                        android:layout_marginTop="4dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="0dp"
@@ -409,10 +530,10 @@
                             android:layout_width="85dp"
                             android:layout_height="50dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/switch_off"
                             android:contentDescription="Toggle Personal Items"
+                            android:padding="4dp"
                             android:scaleType="fitCenter"
-                            android:padding="4dp" />
+                            android:src="@drawable/switch_off" />
                     </LinearLayout>
 
                     <HorizontalScrollView
@@ -429,12 +550,35 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Wheel" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bicycle" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Umbrella" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Surfboard" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Poster" />
-                            <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Other" />
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Wheel" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bicycle" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Umbrella" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Surfboard" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Poster" />
+
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Other" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -443,8 +587,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         android:padding="8dp">
 
                         <TextView
@@ -453,8 +597,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Lost date:"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/black" />
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/etLostDate"
@@ -463,10 +607,10 @@
                             android:background="?android:attr/selectableItemBackground"
                             android:clickable="true"
                             android:focusable="true"
+                            android:gravity="center"
                             android:minWidth="80dp"
                             android:minHeight="48dp"
                             android:padding="4dp"
-                            android:gravity="center"
                             android:text="No date selected"
                             android:textColor="#009688"
                             android:textSize="14sp" />
@@ -480,19 +624,19 @@
                         android:id="@+id/btnSubmitLostItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Submit Report"
+                        android:layout_marginTop="8dp"
                         android:backgroundTint="@color/green"
-                        android:textColor="@android:color/white"
-                        android:layout_marginTop="8dp" />
+                        android:text="Submit Report"
+                        android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/btnCancelLostItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Cancel"
                         android:layout_marginTop="8dp"
-                        android:backgroundTint="@color/red"
                         android:layout_marginBottom="16dp"
+                        android:backgroundTint="@color/red"
+                        android:text="Cancel"
                         android:textColor="@android:color/white" />
 
                 </LinearLayout>
@@ -503,73 +647,73 @@
             android:id="@+id/imagePreview"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:scaleType="fitCenter"
             android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/etCameraImageTitle"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintDimensionRatio="7:12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_max="400dp"
-            app:layout_constraintDimensionRatio="7:12" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Title Input for Camera Preview -->
         <EditText
             android:id="@+id/etCameraImageTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Enter image title"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
+            android:hint="Enter image title"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/cameraPreviewButtons"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Title Input for Gallery Preview -->
         <EditText
             android:id="@+id/etGalleryImageTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Enter image title"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
+            android:hint="Enter image title"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/galleryPreviewButtons"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!--   Camera image Preview page -->
         <LinearLayout
             android:id="@+id/cameraPreviewButtons"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewReports"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <Button
                 android:id="@+id/btnRetake"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange"
-                android:textColor="@color/white"
-                android:text="Retake" />
+                android:text="Retake"
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@+id/btnSaveFromCamera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save"
+                android:layout_marginStart="16dp"
                 android:backgroundTint="@color/green"
-                android:textColor="@color/white"
-                android:layout_marginStart="16dp" />
+                android:text="Save"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!--   Gallery image Preview page -->
@@ -577,30 +721,31 @@
             android:id="@+id/galleryPreviewButtons"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewReports"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <Button
                 android:id="@+id/cancelImageFromGallery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cancel"
+                android:layout_marginStart="16dp"
                 android:backgroundTint="@color/red"
-                android:textColor="@color/white"
-                android:layout_marginStart="16dp" />
+                android:text="Cancel"
+                android:textColor="@color/white" />
+
             <Button
                 android:id="@+id/saveImageFromGallery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save"
+                android:layout_marginStart="16dp"
                 android:backgroundTint="@color/green"
-                android:textColor="@color/white"
-                android:layout_marginStart="16dp" />
+                android:text="Save"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <!--   Navigation View -->

@@ -23,6 +23,7 @@ public class Match {
     public void setId(String id) {
         this.id = id;
     }
+
     public void deleteLostItem(Item item) {
         lostItems.remove(item);
     }

@@ -14,7 +14,6 @@ import com.havah_avihaim_emanuelm.finderlog.matches.Match;
 import java.util.List;
 
 public class MatchesActivity extends BaseActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,4 +30,5 @@ public class MatchesActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
 
     }
+
 }

@@ -62,25 +62,20 @@ public class MainActivity extends BaseActivity {
     private static final String CHANNEL_DESC = "Notifications for found/lost item updates";
     private DrawerLayout drawerLayout;
     private static final int REQUEST_CODE_PERMISSIONS = 10;
-    private static final String[] REQUIRED_PERMISSIONS = new String[]{
-            Manifest.permission.CAMERA
-    };
     private CameraHelper cameraHelper;
     private PreviewView previewView;
-
     private GalleryHelper galleryHelper;
     private Bitmap bitmapToProcess;
     private SimpleDateFormat sdf;
-
+    private static final String[] REQUIRED_PERMISSIONS = new String[]{
+            Manifest.permission.CAMERA
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
-
-
         // Variables Start:
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewReports);
         setupBottomNavigation(bottomNavigationView, R.id.nav_reports);
@@ -303,17 +298,6 @@ public class MainActivity extends BaseActivity {
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         });
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-//                    != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(
-//                        this,
-//                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-//                        REQUEST_NOTIFICATION_PERMISSION
-//                );
-//            }
-//        }
         createNotificationChannel();
     }
 
@@ -337,7 +321,6 @@ public class MainActivity extends BaseActivity {
 
         return builder;
     }
-
 
     /**
      * Launches gallery image picker using the new ActivityResult API.
@@ -542,4 +525,5 @@ public class MainActivity extends BaseActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
 }

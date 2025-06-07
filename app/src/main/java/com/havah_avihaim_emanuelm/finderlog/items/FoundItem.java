@@ -21,7 +21,6 @@ public class FoundItem implements Item {
         this.description = description;
     }
 
-
     @Override
     public String getDescription() {
         return description;
@@ -32,22 +31,13 @@ public class FoundItem implements Item {
         this.id = id;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getImgPath() {
         return imgPath;
     }
 
-
     @Override
     public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Override
@@ -63,14 +53,10 @@ public class FoundItem implements Item {
         return foundDate;
     }
 
-
     @Override
     public String getId() {
         return id;
     }
 
-    public String getImgType() {
-        return imgType;
-    }
-
+    public String getImgType() {return imgType;}
 }

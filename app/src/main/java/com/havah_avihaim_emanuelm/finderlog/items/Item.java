@@ -9,5 +9,4 @@ public interface Item {
     String getStatus();
     Date getReportDate();
     void setId(String id);
-
 }

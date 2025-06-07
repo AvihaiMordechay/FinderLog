@@ -10,10 +10,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.UUID;
 
 public class StorageService {
-
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference rootRef = storage.getReference();
-
     // Upload a file with a random generated path (e.g. uploads/uuid.jpg)
     public void uploadFile(Uri fileUri, UploadCallback callback) {
         String extension = getFileExtension(String.valueOf(fileUri));
@@ -27,23 +25,9 @@ public class StorageService {
                                 .addOnFailureListener(e -> callback.onComplete(null)))
                 .addOnFailureListener(e -> callback.onComplete(null));
     }
-
-
     // Delete a file at a given path
-    public void deleteFile(String storagePath, DeleteCallback callback) {
-        StorageReference fileRef = rootRef.child(storagePath);
-
-        fileRef.delete()
-                .addOnSuccessListener(aVoid -> callback.onComplete(true))
-                .addOnFailureListener(e -> callback.onComplete(false));
-    }
-
-
     public interface UploadCallback {
         void onComplete(String downloadUrl);
-    }
-    public interface DeleteCallback {
-        void onComplete(boolean success);
     }
 }
 

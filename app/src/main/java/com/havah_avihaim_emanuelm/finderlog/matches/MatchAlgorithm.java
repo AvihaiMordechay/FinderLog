@@ -54,7 +54,6 @@ public class MatchAlgorithm {
         this.context = context;
     }
 
-
     private void registerReceiver() {
         IntentFilter filter = new IntentFilter(MachineLearningService.ACTION_ANALYZE_IMAGE);
         ContextCompat.registerReceiver(context, resultReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
@@ -208,7 +207,6 @@ public class MatchAlgorithm {
         NotificationManagerCompat.from(context).notify(notifyId, builder.build());
     }
 
-
     public List<String> convertToList(String description) {
         return Arrays.stream(description.split(","))
                 .map(String::trim)
@@ -234,6 +232,5 @@ public class MatchAlgorithm {
         cal.set(Calendar.MILLISECOND, 0);
         return cal;
     }
-
 
 }

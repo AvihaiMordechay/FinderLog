@@ -43,7 +43,6 @@ public class FirestoreService {
                 });
     }
 
-
     public void getItems(Class<? extends Item> clazz, ResultCallback<List<? extends Item>> callback) {
         String collection = getCollectionName(clazz);
         db.collection(collection)
@@ -117,7 +116,6 @@ public class FirestoreService {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error fetching match", e));
     }
 
-
     public void getAllMatches(ResultCallback<List<Match>> callback) {
         db.collection("matches")
                 .get()
@@ -132,12 +130,6 @@ public class FirestoreService {
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error getting matches", e);
                 });
-    }
-
-    public void deleteMatchesById(String id) {
-        db.collection("matches").document(id).delete()
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Matches deleted: " + id))
-                .addOnFailureListener(e -> Log.e("Firestore", "Error deleting matches", e));
     }
 
     public void deleteLostItemFromMatches(LostItem lostItem) {

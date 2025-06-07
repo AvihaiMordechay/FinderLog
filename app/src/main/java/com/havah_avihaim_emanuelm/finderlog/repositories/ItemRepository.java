@@ -42,6 +42,7 @@ public class ItemRepository {
         }
         return null;
     }
+
     public int getSize() {
         return cachedItems.size();
     }

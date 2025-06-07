@@ -18,7 +18,6 @@ import androidx.core.content.ContextCompat;
 import com.havah_avihaim_emanuelm.finderlog.R;
 
 public class SettingsActivity extends AppCompatActivity {
-
     private SwitchCompat switchNotifications;
     private SharedPreferences prefs;
 
@@ -100,4 +99,5 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
+
 }

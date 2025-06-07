@@ -36,7 +36,6 @@ public class MachineLearningService extends Service {
                 analyzeImageFromFirebaseStorage(imageUri);
             }
         }
-
         return START_NOT_STICKY;
     }
 
@@ -85,4 +84,5 @@ public class MachineLearningService extends Service {
         resultIntent.putExtra(EXTRA_LABELS, labels);
         sendBroadcast(resultIntent);
     }
+
 }
