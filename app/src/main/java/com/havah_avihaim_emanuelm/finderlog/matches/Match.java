@@ -10,7 +10,7 @@ public class Match {
     private String title;
     private List<LostItem> lostItems;
     private String id;
-
+    @SuppressWarnings("unused")
     public Match() {}
     public Match(String imgPath, String title) {
         this.imgPath = imgPath;
@@ -25,7 +25,9 @@ public class Match {
     }
 
     public void deleteLostItem(Item item) {
-        lostItems.remove(item);
+        if (item instanceof LostItem) {
+            lostItems.remove((LostItem) item);
+        }
     }
 
     public void setLostItems(List<LostItem> lostItems) {

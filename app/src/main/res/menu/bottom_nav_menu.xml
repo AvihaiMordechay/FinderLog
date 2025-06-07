@@ -3,19 +3,19 @@
     <item
         android:id="@+id/nav_lost"
         android:icon="@drawable/lost_items"
-        android:title="Lost Items" />
+        android:title="@string/lost_items"/>
     <item
         android:id="@+id/nav_found"
         android:icon="@drawable/found_items"
-        android:title="Found Items" />
+        android:title="@string/found_items" />
     <item
         android:id="@+id/nav_matches"
         android:icon="@drawable/match"
-        android:title="Matches" />
+        android:title="@string/matches" />
     <item
         android:id="@+id/nav_reports"
         android:icon="@drawable/report"
-        android:title="Report" />
+        android:title="@string/report" />
 </menu>
 
 

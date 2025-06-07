@@ -169,7 +169,7 @@ public class CameraHelper {
 
             return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("ImageUtils", "Failed to rotate image from path: " + imagePath, e);
             return bitmap;
         }
     }

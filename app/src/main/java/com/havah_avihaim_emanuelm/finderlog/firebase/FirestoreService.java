@@ -39,9 +39,7 @@ public class FirestoreService {
                     Log.d("Firestore", "Item added to " + collection + ": " + id);
                     callback.onResult(item);
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error adding item", e);
-                });
+                .addOnFailureListener(e -> Log.e("Firestore", "Error adding item", e));
     }
 
     // Retrieves all items of the specified class (LostItem or FoundItem) from Firestore and returns them via callback.
@@ -93,9 +91,7 @@ public class FirestoreService {
                     docRef.update("id", id);
                     Log.d("Firestore", "Matches added: " + id);
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error adding match", e);
-                });
+                .addOnFailureListener(e -> Log.e("Firestore", "Error adding match", e));
     }
 
     // Adds a LostItem to an existing match by match ID and updates the match document in Firestore.
@@ -132,9 +128,7 @@ public class FirestoreService {
                     }
                     callback.onResult(matchesList);
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error getting matches", e);
-                });
+                .addOnFailureListener(e -> Log.e("Firestore", "Error getting matches", e));
     }
 
     // Removes a specified LostItem from all matches in which it appears and updates the match documents accordingly.

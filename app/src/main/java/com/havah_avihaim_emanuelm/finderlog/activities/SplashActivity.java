@@ -12,7 +12,8 @@ import androidx.core.view.WindowCompat;
 
 import com.havah_avihaim_emanuelm.finderlog.R;
 
-// Initializes splash screen, shows countdown timer, then starts MainActivity and finishes itself to prevent back navigation.
+// Initializes splash screen, shows countdown timer,
+// then starts MainActivity and finishes itself to prevent back navigation.
 public class SplashActivity extends AppCompatActivity {
 
     public static final int APP_START_SEC = 7;

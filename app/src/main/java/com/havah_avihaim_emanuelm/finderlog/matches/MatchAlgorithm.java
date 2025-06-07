@@ -120,7 +120,7 @@ public class MatchAlgorithm {
         if (hasMatch) {
             firestoreService.addMatch(match);
             getMatchRepo().addMatch(match);
-            MatchNotification("Match Found", matchesCount + " matches found for " + this.imgTitle + " image");
+            MatchNotification(matchesCount + " matches found for " + this.imgTitle + " image");
         }
     }
 
@@ -179,7 +179,7 @@ public class MatchAlgorithm {
             }
         }
         if (matchesCount > 0) {
-            MatchNotification("Match Found", matchesCount + " matches found for report " + lostItem.getTitle());
+            MatchNotification(matchesCount + " matches found for report " + lostItem.getTitle());
         }
         // Optional callback
         if (onComplete != null) {
@@ -189,7 +189,7 @@ public class MatchAlgorithm {
 
     // Displays notification when matches are found
     // Checks user preferences before showing notification
-    private void MatchNotification(String title, String message) {
+    private void MatchNotification(String message) {
 
         boolean notificationsEnabled = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
                 .getBoolean("notifications_enabled", false);
@@ -205,7 +205,7 @@ public class MatchAlgorithm {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.our_alert)
-                        .setContentTitle(title)
+                        .setContentTitle("Match Found")
                         .setContentText(message)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 

@@ -25,6 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:padding="8dp"
+            android:contentDescription="@string/empty_list"
             app:layout_constraintTop_toBottomOf="@id/textViewFound"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationViewMatches"
             app:layout_constraintStart_toStartOf="parent"

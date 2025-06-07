@@ -31,7 +31,7 @@
         android:layout_marginBottom="80dp"
         android:gravity="center"
         android:text="@string/name_and_id"
-        android:textColor="#666666"
+        android:textColor="#333333"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

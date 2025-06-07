@@ -44,7 +44,6 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
 
-            <!-- תיאור -->
             <TextView
                 android:id="@+id/itemDescription"
                 android:layout_width="wrap_content"
@@ -52,9 +51,8 @@
                 android:text="@string/short_description"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"
-                android:textColor="@android:color/darker_gray" />
+                android:textColor="#555555" />
 
-            <!-- פרטים מורחבים -->
             <LinearLayout
                 android:id="@+id/expandedLayout"
                 android:layout_width="match_parent"
@@ -86,7 +84,7 @@
                     android:id="@+id/itemLostDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lost Date" />
+                    android:text="@string/lost_date1" />
 
                 <TextView
                     android:id="@+id/itemReportDate"

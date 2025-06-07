@@ -70,15 +70,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
         // Binds an Item to the ViewHolder UI, setting text, images, and handling expand/collapse and delete actions.
         public void bind(Item item, int position, ItemRepository repository,
-                         RecyclerView.Adapter adapter, OnItemListChangedListener listChangedListener,boolean showDeleteButton) {
+                         RecyclerView.Adapter<ViewHolder>  adapter, OnItemListChangedListener listChangedListener,boolean showDeleteButton) {
             title.setText(item.getTitle());
             String desc = item.getDescription();
             description.setText((desc == null || desc.isEmpty()) ? "No description available." : desc);
-            status.setText("Status: " + item.getStatus());
+            status.setText(itemView.getContext().getString(R.string.status_label, item.getStatus()));
 
             if (type == TYPE_FOUND && item instanceof FoundItem) {
                 FoundItem foundItem = (FoundItem) item;
-                reportDate.setText("Found: " + foundItem.getReportDate());
+                reportDate.setText(itemView.getContext().getString(R.string.found_label, foundItem.getReportDate()));
 
                 Glide.with(itemView.getContext())
                         .load(foundItem.getImgPath())
@@ -87,10 +87,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             if (type == TYPE_LOST && item instanceof LostItem) {
                 LostItem lostItem = (LostItem) item;
 
-                clientName.setText("Name: " + lostItem.getClientName());
-                clientPhone.setText("Phone: " + lostItem.getClientPhone());
-                lostDate.setText("Lost: " + lostItem.getLostDate());
-                reportDate.setText("Reported: " + lostItem.getReportDate());
+                clientName.setText(itemView.getContext().getString(R.string.name_label, lostItem.getClientName()));
+                clientPhone.setText(itemView.getContext().getString(R.string.phone_label, lostItem.getClientPhone()));
+                lostDate.setText(itemView.getContext().getString(R.string.lost_label, lostItem.getLostDate()));
+                reportDate.setText(itemView.getContext().getString(R.string.reported_label, lostItem.getReportDate()));
 
                 // Toggle expand/collapse
                 itemView.setOnClickListener(v ->

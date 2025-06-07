@@ -227,7 +227,7 @@ public class MainActivity extends BaseActivity {
             ((EditText) findViewById(R.id.etTitle)).setText("");
             ((EditText) findViewById(R.id.etClientName)).setText("");
             ((EditText) findViewById(R.id.etClientPhone)).setText("");
-            ((TextView) findViewById(R.id.etLostDate)).setText("No date selected");
+            ((TextView) findViewById(R.id.etLostDate)).setText(getString(R.string.no_date_selected));
             clearAllCheckboxes();
             closeAllCategoryScrolls();
             // Close Form

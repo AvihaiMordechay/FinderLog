@@ -11,7 +11,7 @@ public class LostItem implements Item {
     private String title;
     private Date lostDate;
     private Date reportDate;
-
+    @SuppressWarnings("unused")
     public LostItem() {
     }
 

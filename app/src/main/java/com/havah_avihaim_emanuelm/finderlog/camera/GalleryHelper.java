@@ -47,7 +47,7 @@ public class GalleryHelper {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("ImageUtils", "Failed to read image info", e);
             Toast.makeText(context, "Failed to read image info", Toast.LENGTH_SHORT).show();
         }
     }

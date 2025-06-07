@@ -10,8 +10,8 @@ public class FoundItem implements Item {
     private String status;
     private String title;
     private Date foundDate;
-
-    public FoundItem() {};
+    @SuppressWarnings("unused")
+    public FoundItem() {}
     public FoundItem(String title, String imgPath, String imgType, String description) {
         this.title = title;
         this.imgPath = imgPath;

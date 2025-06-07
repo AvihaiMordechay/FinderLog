@@ -76,10 +76,22 @@
     <string name="item_image">Item image</string>
     <string name="description">Description</string>
     <string name="status_open">Status: open</string>
-    <string name="found_2024_01_01">Found: 2024-01-01</string>
+    <string name="found_2024_01_01">Found: 2024–01–01</string>
     <string name="delete">Delete</string>
     <string name="short_description">Short Description</string>
     <string name="status">Status</string>
     <string name="report_date">Report Date</string>
     <string name="match_title">Match Title</string>">
+
+    <string name="status_label">Status: %1$s</string>
+    <string name="found_label">Found: %1$s</string>
+    <string name="reported_label">Reported: %1$s</string>
+    <string name="name_label">Name: %1$s</string>
+    <string name="phone_label">Phone: %1$s</string>
+    <string name="lost_label">Lost: %1$s</string>
+    <string name="report">Report</string>
+    <string name="lost_date1">Lost Date</string>
+    <string name="match_image">Image representing a found item</string>
+
+
 </resources>

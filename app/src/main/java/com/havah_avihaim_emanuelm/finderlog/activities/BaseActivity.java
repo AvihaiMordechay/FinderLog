@@ -17,9 +17,6 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.FirestoreService;
  * including common services and UI setup such as bottom navigation and empty state handling.
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    /**
-     * Singleton instance of FirestoreService for accessing Firebase Firestore.
-     */
     protected static final FirestoreService firestoreService = FirestoreService.getSharedInstance();
 
     protected void setupBottomNavigation(BottomNavigationView bottomNavigationView, int currentItemId) {
