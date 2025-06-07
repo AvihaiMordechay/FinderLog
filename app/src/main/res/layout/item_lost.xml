@@ -20,7 +20,7 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="4dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Delete"
+            android:contentDescription="@string/delete"
             android:visibility="gone"
             android:src="@drawable/ic_trash"
           />
@@ -39,7 +39,7 @@
                 android:id="@+id/itemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Title"
+                android:text="@string/title"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
@@ -49,7 +49,7 @@
                 android:id="@+id/itemDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Short Description"
+                android:text="@string/short_description"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"
                 android:textColor="@android:color/darker_gray" />
@@ -67,20 +67,20 @@
                     android:id="@+id/itemClientName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Client Name"
+                    android:text="@string/client_name"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/itemClientPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Client Phone" />
+                    android:text="@string/client_phone" />
 
                 <TextView
                     android:id="@+id/itemStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Status" />
+                    android:text="@string/status" />
 
                 <TextView
                     android:id="@+id/itemLostDate"
@@ -92,7 +92,7 @@
                     android:id="@+id/itemReportDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Report Date" />
+                    android:text="@string/report_date" />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

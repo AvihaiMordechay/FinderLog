@@ -11,7 +11,7 @@
         android:id="@+id/textViewLost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lost Items"
+        android:text="@string/lost_items"
         android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"

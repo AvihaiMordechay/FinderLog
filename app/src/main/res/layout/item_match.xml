@@ -27,7 +27,7 @@
             android:id="@+id/textViewTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Match Title"
+            android:text="@string/match_title"
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="@android:color/black"

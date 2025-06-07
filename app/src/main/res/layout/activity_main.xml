@@ -66,7 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="Open Camera"
+                        android:text="@string/open_camera"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
@@ -103,7 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="Upload Image"
+                        android:text="@string/upload_image"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
@@ -138,7 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="Add Report"
+                        android:text="@string/add_report"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" />
 
@@ -163,7 +163,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="200dp"
-            android:text="Capture"
+            android:text="@string/capture"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +176,7 @@
             android:layout_height="50dp"
             android:layout_margin="8dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Close Camera"
+            android:contentDescription="@string/close_camera"
             android:src="@drawable/baseline_close_24"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/previewView"
@@ -212,26 +212,26 @@
                         android:id="@+id/etTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Title" />
+                        android:hint="@string/title" />
 
                     <EditText
                         android:id="@+id/etClientName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Client Name" />
+                        android:hint="@string/client_name" />
 
                     <EditText
                         android:id="@+id/etClientPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Client Phone"
+                        android:hint="@string/client_phone"
                         android:inputType="phone" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Select item categories:"
+                        android:text="@string/select_item_categories"
                         android:textStyle="bold" />
 
                     <!-- Personal Items Header -->
@@ -246,14 +246,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Personal Items" />
+                            android:text="@string/personal_items" />
 
                         <ImageButton
                             android:id="@+id/btnTogglePersonal"
                             android:layout_width="85dp"
                             android:layout_height="50dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Toggle Personal Items"
+                            android:contentDescription="@string/toggle_personal_items"
                             android:padding="4dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/switch_off" />
@@ -277,37 +277,37 @@
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Handbag" />
+                                android:text="@string/handbag" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Bag" />
+                                android:text="@string/bag" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Passport" />
+                                android:text="@string/passport" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Toy" />
+                                android:text="@string/toy" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Money" />
+                                android:text="@string/money" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Lego" />
+                                android:text="@string/lego" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Cap" />
+                                android:text="@string/cap" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -324,14 +324,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Clothing Details" />
+                            android:text="@string/clothing_details" />
 
                         <ImageButton
                             android:id="@+id/btnToggleClothing"
                             android:layout_width="85dp"
                             android:layout_height="50dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Toggle Personal Items"
+                            android:contentDescription="@string/toggle_personal_items"
                             android:padding="4dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/switch_off" />
@@ -354,92 +354,92 @@
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Clock" />
+                                android:text="@string/clock" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Necklace" />
+                                android:text="@string/necklace" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Bracelet" />
+                                android:text="@string/bracelet" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Jewellery" />
+                                android:text="@string/jewellery" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Chain" />
+                                android:text="@string/chain" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Shorts" />
+                                android:text="@string/shorts" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Dress" />
+                                android:text="@string/dress" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Jeans" />
+                                android:text="@string/jeans" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Swimwear" />
+                                android:text="@string/swimwear" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Hat" />
+                                android:text="@string/hat" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Scarf" />
+                                android:text="@string/scarf" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Jacket" />
+                                android:text="@string/jacket" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Outerwear" />
+                                android:text="@string/outerwear" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Shoe" />
+                                android:text="@string/shoe" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sneakers" />
+                                android:text="@string/sneakers" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Ring" />
+                                android:text="@string/ring" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sunglasses" />
+                                android:text="@string/sunglasses" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tie" />
+                                android:text="@string/tie" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -456,14 +456,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Technology Items" />
+                            android:text="@string/technology_items" />
 
                         <ImageButton
                             android:id="@+id/btnToggleTech"
                             android:layout_width="85dp"
                             android:layout_height="50dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Toggle Personal Items"
+                            android:contentDescription="@string/toggle_personal_items"
                             android:padding="4dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/switch_off" />
@@ -486,27 +486,27 @@
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Mobile phone" />
+                                android:text="@string/mobile_phone" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Computer" />
+                                android:text="@string/computer" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Musical instrument" />
+                                android:text="@string/musical_instrument" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Goggles" />
+                                android:text="@string/goggles" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Glasses" />
+                                android:text="@string/glasses" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -523,14 +523,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Other Items" />
+                            android:text="@string/other_items" />
 
                         <ImageButton
                             android:id="@+id/btnToggleOther"
                             android:layout_width="85dp"
                             android:layout_height="50dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Toggle Personal Items"
+                            android:contentDescription="@string/toggle_personal_items"
                             android:padding="4dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/switch_off" />
@@ -553,32 +553,32 @@
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Wheel" />
+                                android:text="@string/wheel" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Bicycle" />
+                                android:text="@string/bicycle" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Umbrella" />
+                                android:text="@string/umbrella" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Surfboard" />
+                                android:text="@string/surfboard" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Poster" />
+                                android:text="@string/poster" />
 
                             <CheckBox
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Other" />
+                                android:text="@string/other" />
 
                         </LinearLayout>
                     </HorizontalScrollView>
@@ -596,7 +596,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Lost date:"
+                            android:text="@string/lost_date"
                             android:textColor="@android:color/black"
                             android:textSize="14sp" />
 
@@ -611,7 +611,7 @@
                             android:minWidth="80dp"
                             android:minHeight="48dp"
                             android:padding="4dp"
-                            android:text="No date selected"
+                            android:text="@string/no_date_selected"
                             android:textColor="#009688"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -626,7 +626,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:backgroundTint="@color/green"
-                        android:text="Submit Report"
+                        android:text="@string/submit_report"
                         android:textColor="@android:color/white" />
 
                     <Button
@@ -636,7 +636,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="16dp"
                         android:backgroundTint="@color/red"
-                        android:text="Cancel"
+                        android:text="@string/cancel"
                         android:textColor="@android:color/white" />
 
                 </LinearLayout>
@@ -665,7 +665,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:hint="Enter image title"
+            android:hint="@string/enter_image_title"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/cameraPreviewButtons"
             app:layout_constraintEnd_toEndOf="parent"
@@ -679,7 +679,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:hint="Enter image title"
+            android:hint="@string/enter_image_title"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/galleryPreviewButtons"
             app:layout_constraintEnd_toEndOf="parent"
@@ -703,7 +703,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/orange"
-                android:text="Retake"
+                android:text="@string/retake"
                 android:textColor="@color/white" />
 
             <Button
@@ -712,7 +712,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:backgroundTint="@color/green"
-                android:text="Save"
+                android:text="@string/save"
                 android:textColor="@color/white" />
         </LinearLayout>
 
@@ -735,7 +735,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:backgroundTint="@color/red"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textColor="@color/white" />
 
             <Button
@@ -744,7 +744,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:backgroundTint="@color/green"
-                android:text="Save"
+                android:text="@string/save"
                 android:textColor="@color/white" />
         </LinearLayout>
 
