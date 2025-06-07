@@ -9,22 +9,19 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.havah_avihaim_emanuelm.finderlog.matches.MatchAlgorithm;
-import com.havah_avihaim_emanuelm.finderlog.firebase.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.StorageService;
 
 public class GalleryHelper {
 
     private final Context context;
-    private final StorageService storageService;
-    private final FirestoreService firestoreService = FirestoreService.getSharedInstance();
+    private final StorageService storageService = StorageService.getSharedInstance();
 
     private Uri pendingImageUri;
     private String pendingMimeType;
 
-    public GalleryHelper(Context context, StorageService storageService) {
+    public GalleryHelper(Context context) {
         this.context = context;
-        this.storageService = storageService;
     }
 
     public void handleSelectedImage(Uri imageUri, Runnable onReadyToDisplay) {
@@ -63,7 +60,7 @@ public class GalleryHelper {
 
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
-                new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage, imageTitle);
+                new MatchAlgorithm(context, pendingMimeType, this::clearPendingImage, imageTitle);
                 Intent intent = new Intent(context, MachineLearningService.class);
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
                 intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);

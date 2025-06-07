@@ -10,9 +10,20 @@ import com.google.firebase.storage.StorageReference;
 import java.util.UUID;
 
 public class StorageService {
+    // Upload a file with a random generated path (e.g. uploads/uuid.jpg)
+    private static StorageService instance;
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference rootRef = storage.getReference();
-    // Upload a file with a random generated path (e.g. uploads/uuid.jpg)
+
+    private StorageService() {
+    }
+
+    public static synchronized StorageService getSharedInstance() {
+        if (instance == null) {
+            instance = new StorageService();
+        }
+        return instance;
+    }
     public void uploadFile(Uri fileUri, UploadCallback callback) {
         String extension = getFileExtension(String.valueOf(fileUri));
         String randomPath = "uploads/" + UUID.randomUUID().toString() + "." + extension;

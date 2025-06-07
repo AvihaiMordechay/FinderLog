@@ -34,14 +34,13 @@ import java.util.stream.Collectors;
 public class MatchAlgorithm {
     private static final String POST_NOTIFICATIONS = "android.permission.POST_NOTIFICATIONS";
     private final Context context;
-    private final FirestoreService firestoreService;
+    private final FirestoreService firestoreService = FirestoreService.getSharedInstance();
     private String mimeType;
     private Runnable onComplete;
     private String imgTitle;
 
-    public MatchAlgorithm(Context context, FirestoreService firestoreService, String mimeType, Runnable onComplete, String imgTitle) {
+    public MatchAlgorithm(Context context, String mimeType, Runnable onComplete, String imgTitle) {
         this.context = context;
-        this.firestoreService = firestoreService;
         this.mimeType = mimeType;
         this.onComplete = onComplete;
         this.imgTitle = imgTitle;
@@ -49,8 +48,7 @@ public class MatchAlgorithm {
         registerReceiver();
     }
 
-    public MatchAlgorithm(FirestoreService firestoreService, Context context) {
-        this.firestoreService = firestoreService;
+    public MatchAlgorithm(Context context) {
         this.context = context;
     }
 

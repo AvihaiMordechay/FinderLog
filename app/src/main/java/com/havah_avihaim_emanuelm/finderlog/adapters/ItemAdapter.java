@@ -25,7 +25,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private final ItemRepository repository;
     protected static final FirestoreService firestoreService = FirestoreService.getSharedInstance();
     private final OnItemListChangedListener listChangedListener;
-    private boolean showDeleteButton;
+    private final boolean showDeleteButton;
 
     public ItemAdapter(ItemRepository repository, OnItemListChangedListener listener,boolean showDeleteButton) {
         this.repository = repository;

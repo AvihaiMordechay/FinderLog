@@ -95,8 +95,8 @@ public class MainActivity extends BaseActivity {
         LinearLayout cameraPreviewButtons = findViewById(R.id.cameraPreviewButtons);
         Button btnRetake = findViewById(R.id.btnRetake);
         Button btnSaveFromCamera = findViewById(R.id.btnSaveFromCamera);
-        galleryHelper = new GalleryHelper(this, storageService);
-        cameraHelper = new CameraHelper(this, previewView, storageService);
+        galleryHelper = new GalleryHelper(this);
+        cameraHelper = new CameraHelper(this, previewView);
         Button saveImageFromGallery = findViewById(R.id.saveImageFromGallery);
         Button cancelImageFromGallery = findViewById(R.id.cancelImageFromGallery);
         LinearLayout galleryPreviewButtons = findViewById(R.id.galleryPreviewButtons);
@@ -411,7 +411,7 @@ public class MainActivity extends BaseActivity {
         LostItem lostItem = new LostItem(clientName, clientPhone, description, "open", title, lostDate, new Date());
         firestoreService.addItem(lostItem, item -> {
             getLostRepo().addItem(item);
-            MatchAlgorithm matchAlgorithm = new MatchAlgorithm(firestoreService, this);
+            MatchAlgorithm matchAlgorithm = new MatchAlgorithm(this);
             new Thread(() -> matchAlgorithm.startMatchingThread(matchAlgorithm.convertToList(description), lostItem)).start();
         });
 

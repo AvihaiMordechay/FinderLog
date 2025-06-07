@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.havah_avihaim_emanuelm.finderlog.matches.MatchAlgorithm;
 import com.havah_avihaim_emanuelm.finderlog.activities.MainActivity;
-import com.havah_avihaim_emanuelm.finderlog.firebase.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.StorageService;
 
@@ -36,16 +35,14 @@ public class CameraHelper {
     private final Context context;
     private final PreviewView previewView;
     private ImageCapture imageCapture;
-    private final StorageService storageService;
-    private final FirestoreService firestoreService = FirestoreService.getSharedInstance();
+    private final StorageService storageService = StorageService.getSharedInstance();
 
     private Uri pendingImageUri;
     private String pendingMimeType;
 
-    public CameraHelper(Context context, PreviewView previewView, StorageService storageService) {
+    public CameraHelper(Context context, PreviewView previewView) {
         this.context = context;
         this.previewView = previewView;
-        this.storageService = storageService;
     }
 
     public void startCamera() {
@@ -133,7 +130,7 @@ public class CameraHelper {
 
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
-                new MatchAlgorithm(context, firestoreService, pendingMimeType, this::clearPendingImage, imageTitle);
+                new MatchAlgorithm(context, pendingMimeType, this::clearPendingImage, imageTitle);
                 Intent intent = new Intent(context, MachineLearningService.class);
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
                 intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);
