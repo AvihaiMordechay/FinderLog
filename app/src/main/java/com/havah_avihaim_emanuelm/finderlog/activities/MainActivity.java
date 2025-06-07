@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity {
         Button btnRetake = findViewById(R.id.btnRetake);
         Button btnSaveFromCamera = findViewById(R.id.btnSaveFromCamera);
         galleryHelper = new GalleryHelper(this, storageService, firestoreService, machineLearningService);
-        cameraHelper = new CameraHelper(this, previewView, storageService, firestoreService, machineLearningService);
+        cameraHelper = new CameraHelper(this, previewView, storageService, firestoreService);
         Button saveImageFromGallery = findViewById(R.id.saveImageFromGallery);
         Button cancelImageFromGallery = findViewById(R.id.cancelImageFromGallery);
         LinearLayout galleryPreviewButtons = findViewById(R.id.galleryPreviewButtons);
