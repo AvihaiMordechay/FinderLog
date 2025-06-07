@@ -11,13 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
 import com.havah_avihaim_emanuelm.finderlog.firebase.FirestoreService;
-import com.havah_avihaim_emanuelm.finderlog.firebase.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.StorageService;
 
+/**
+ * BaseActivity is an abstract class that provides shared functionality for all activities in the app,
+ * including common services and UI setup such as bottom navigation and empty state handling.
+ */
 public abstract class BaseActivity extends AppCompatActivity {
+    /**
+     * Singleton instance of FirestoreService for accessing Firebase Firestore.
+     */
     protected static final FirestoreService firestoreService = FirestoreService.getSharedInstance();
     protected static final StorageService storageService = new StorageService();
-    protected static final MachineLearningService  machineLearningService = new MachineLearningService();
 
     protected void setupBottomNavigation(BottomNavigationView bottomNavigationView, int currentItemId) {
         bottomNavigationView.setSelectedItemId(currentItemId);

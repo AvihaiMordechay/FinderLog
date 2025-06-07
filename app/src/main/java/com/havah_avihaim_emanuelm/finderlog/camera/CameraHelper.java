@@ -37,16 +37,15 @@ public class CameraHelper {
     private final PreviewView previewView;
     private ImageCapture imageCapture;
     private final StorageService storageService;
-    private final FirestoreService firestoreService;
+    private final FirestoreService firestoreService = FirestoreService.getSharedInstance();
+
     private Uri pendingImageUri;
     private String pendingMimeType;
 
-    public CameraHelper(Context context, PreviewView previewView, StorageService storageService,
-                        FirestoreService firestoreService) {
+    public CameraHelper(Context context, PreviewView previewView, StorageService storageService) {
         this.context = context;
         this.previewView = previewView;
         this.storageService = storageService;
-        this.firestoreService = firestoreService;
     }
 
     public void startCamera() {

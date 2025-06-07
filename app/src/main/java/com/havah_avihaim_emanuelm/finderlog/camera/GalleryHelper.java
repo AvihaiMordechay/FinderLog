@@ -15,19 +15,16 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.StorageService;
 
 public class GalleryHelper {
 
-    private Context context;
-    private StorageService storageService;
-    private FirestoreService firestoreService;
+    private final Context context;
+    private final StorageService storageService;
+    private final FirestoreService firestoreService = FirestoreService.getSharedInstance();
+
     private Uri pendingImageUri;
     private String pendingMimeType;
 
-    public GalleryHelper(Context context,
-                         StorageService storageService,
-                         FirestoreService firestoreService,
-                         MachineLearningService machineLearningService) {
+    public GalleryHelper(Context context, StorageService storageService) {
         this.context = context;
         this.storageService = storageService;
-        this.firestoreService = firestoreService;
     }
 
     public void handleSelectedImage(Uri imageUri, Runnable onReadyToDisplay) {
