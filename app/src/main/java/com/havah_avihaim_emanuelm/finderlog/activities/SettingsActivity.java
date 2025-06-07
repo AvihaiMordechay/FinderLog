@@ -17,6 +17,8 @@ import androidx.core.content.ContextCompat;
 
 import com.havah_avihaim_emanuelm.finderlog.R;
 
+// Manages app settings screen, allowing user to enable/disable notifications with runtime permission handling (Android 13+),
+// and select a notification time range saved via SharedPreferences for persistence.
 public class SettingsActivity extends AppCompatActivity {
     private SwitchCompat switchNotifications;
     private SharedPreferences prefs;

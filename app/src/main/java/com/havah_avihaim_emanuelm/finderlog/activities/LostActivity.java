@@ -11,6 +11,8 @@ import com.havah_avihaim_emanuelm.finderlog.adapters.ItemAdapter;
 import com.havah_avihaim_emanuelm.finderlog.repositories.ItemRepository;
 import com.havah_avihaim_emanuelm.finderlog.repositories.Repositories;
 
+// Initializes Lost items list with RecyclerView and bottom navigation;
+// updates UI if the lost items list is empty and refreshes on data changes.
 public class LostActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

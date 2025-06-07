@@ -14,6 +14,9 @@ import com.havah_avihaim_emanuelm.finderlog.matches.Match;
 import java.util.List;
 
 public class MatchesActivity extends BaseActivity {
+
+    // Displays a list of matches with a bottom navigation bar; initializes RecyclerView with MatchAdapter
+    // using matches fetched from the repository, and highlights the matches tab in navigation.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
