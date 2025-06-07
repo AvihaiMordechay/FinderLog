@@ -54,11 +54,15 @@ public class MatchAlgorithm {
         this.context = context;
     }
 
+    // Registers broadcast receiver to listen for machine learning service results
+    // Sets up intent filter for image analysis completion events
     private void registerReceiver() {
         IntentFilter filter = new IntentFilter(MachineLearningService.ACTION_ANALYZE_IMAGE);
         ContextCompat.registerReceiver(context, resultReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
+    // Starts matching process for new uploaded images against existing lost items
+    // Searches for matches based on detected labels and creates Match objects
     private final BroadcastReceiver resultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -87,7 +91,8 @@ public class MatchAlgorithm {
         }
     };
 
-    // For adding new Image
+    // Starts matching process for new uploaded images against existing lost items
+    // Searches for matches based on detected labels and creates Match objects
     private void startMatchingThread(List<String> labels, String imageUri) {
         List<Item> lostItems = getLostRepo().getCachedItems();
         List<LostItem> matchLostItems = new ArrayList<>();
@@ -121,14 +126,15 @@ public class MatchAlgorithm {
         }
     }
 
-    // For adding new report
+    // Starts matching process for new lost item reports against existing found items
+    // Searches through found items to find matches with the new lost item report
     public void startMatchingThread(List<String> labels, LostItem lostItem) {
         List<Item> foundItems = getFoundRepo().getCachedItems();
         List<Match> matches = getMatchRepo().getMatches();
         int matchesCount = 0;
 
         Calendar startDate = getStartDate();
-        if (startDate != null && lostItem.getLostDate().before(startDate.getTime())){
+        if (startDate != null && lostItem.getLostDate().before(startDate.getTime())) {
             Log.d("lost", "Lost item skipped due to old date: " + lostItem.getTitle());
             return;
         }
@@ -183,6 +189,8 @@ public class MatchAlgorithm {
         }
     }
 
+    // Displays notification when matches are found
+    // Checks user preferences before showing notification
     private void MatchNotification(String title, String message) {
 
         boolean notificationsEnabled = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
@@ -207,6 +215,8 @@ public class MatchAlgorithm {
         NotificationManagerCompat.from(context).notify(notifyId, builder.build());
     }
 
+    // Converts comma-separated string into list of trimmed strings
+    // Filters out empty strings from the result
     public List<String> convertToList(String description) {
         return Arrays.stream(description.split(","))
                 .map(String::trim)
@@ -214,16 +224,25 @@ public class MatchAlgorithm {
                 .collect(Collectors.toList());
     }
 
+    // Gets the start date for filtering items based on user's selected time range
+    // Returns calendar object set to beginning of selected period (month/3months/year ago)
     private Calendar getStartDate() {
         int selectedRange = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
                 .getInt("selected_range", 0); // 0 = month, 1 = 3 months, 2 = year
 
         Calendar cal = Calendar.getInstance();
         switch (selectedRange) {
-            case 0: cal.add(Calendar.MONTH, -1); break;
-            case 1: cal.add(Calendar.MONTH, -3); break;
-            case 2: cal.add(Calendar.YEAR, -1); break;
-            default: return null;
+            case 0:
+                cal.add(Calendar.MONTH, -1);
+                break;
+            case 1:
+                cal.add(Calendar.MONTH, -3);
+                break;
+            case 2:
+                cal.add(Calendar.YEAR, -1);
+                break;
+            default:
+                return null;
         }
 
         cal.set(Calendar.HOUR_OF_DAY, 0);

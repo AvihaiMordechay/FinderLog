@@ -27,6 +27,7 @@ public class FirestoreService {
     /**
      * Items:
      */
+    // Adds a new item (lost or found) to Firestore and returns it via callback with its generated ID.
     public void addItem(Item item, ResultCallback<Item> callback) {
         String collection = getCollectionName(item);
         db.collection(collection)
@@ -43,6 +44,7 @@ public class FirestoreService {
                 });
     }
 
+    // Retrieves all items of the specified class (LostItem or FoundItem) from Firestore and returns them via callback.
     public void getItems(Class<? extends Item> clazz, ResultCallback<List<? extends Item>> callback) {
         String collection = getCollectionName(clazz);
         db.collection(collection)
@@ -58,6 +60,7 @@ public class FirestoreService {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error getting items", e));
     }
 
+    // Deletes an item by ID from the appropriate collection (lost or found) in Firestore.
     public void deleteItem(Class<? extends Item> clazz, String id) {
         String collection = getCollectionName(clazz);
         db.collection(collection).document(id).delete()
@@ -80,7 +83,7 @@ public class FirestoreService {
     /**
      * Matches:
      */
-
+    // Adds a match to Firestore and assigns the generated ID to the match object.
     public void addMatch(Match match) {
         db.collection("matches")
                 .add(match)
@@ -95,6 +98,7 @@ public class FirestoreService {
                 });
     }
 
+    // Adds a LostItem to an existing match by match ID and updates the match document in Firestore.
     public void addLostItemToMatch(String matchId, LostItem newLostItem) {
         DocumentReference matchRef = db.collection("matches").document(matchId);
 
@@ -116,6 +120,7 @@ public class FirestoreService {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error fetching match", e));
     }
 
+    // Retrieves all matches from Firestore and returns them via callback.
     public void getAllMatches(ResultCallback<List<Match>> callback) {
         db.collection("matches")
                 .get()
@@ -132,6 +137,7 @@ public class FirestoreService {
                 });
     }
 
+    // Removes a specified LostItem from all matches in which it appears and updates the match documents accordingly.
     public void deleteLostItemFromMatches(LostItem lostItem) {
         db.collection("matches")
                 .get()

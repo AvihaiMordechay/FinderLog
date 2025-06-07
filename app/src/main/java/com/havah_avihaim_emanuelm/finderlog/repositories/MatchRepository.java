@@ -15,16 +15,19 @@ public class MatchRepository {
         return needsLoading;
     }
 
+    // Replaces the current match list with a new one and marks loading as complete.
     public void setMatches(List<Match> matchList) {
         matches.clear();
         matches.addAll(matchList);
         needsLoading = false;
     }
 
+    // Adds a new match to the beginning of the match list.
     public void addMatch(Match match) {
         matches.add(0, match);
     }
 
+    // Adds a LostItem to a specific existing match instance.
     public void addLostItem(LostItem lostItem, Match matchInstance) {
         for (Match match : matches) {
             if (match == matchInstance) {
@@ -34,6 +37,7 @@ public class MatchRepository {
         }
     }
 
+    // Removes a LostItem from all matches in which it appears.
     public void removeLostItem(Item lostItem) {
         for (Match match : matches) {
             match.deleteLostItem(lostItem);
@@ -41,6 +45,7 @@ public class MatchRepository {
 
     }
 
+    // Returns the full list of matches.
     public List<Match> getMatches() {
         return matches;
     }

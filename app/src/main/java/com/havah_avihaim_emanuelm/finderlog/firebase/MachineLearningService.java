@@ -28,6 +28,7 @@ public class MachineLearningService extends Service {
         return null;
     }
 
+    // Handles incoming intent to start image analysis if the action matches ANALYZE_IMAGE.
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && ACTION_ANALYZE_IMAGE.equals(intent.getAction())) {
@@ -39,6 +40,7 @@ public class MachineLearningService extends Service {
         return START_NOT_STICKY;
     }
 
+    // Downloads an image from Firebase Storage and converts it to a Bitmap for labeling.
     private void analyzeImageFromFirebaseStorage(String imageUri) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl(imageUri);
@@ -51,6 +53,7 @@ public class MachineLearningService extends Service {
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to download image: " + e.getMessage()));
     }
 
+    // Performs image labeling on a given Bitmap using ML Kit and filters results by confidence.
     private void runImageLabeling(Bitmap bitmap, String imageUri) {
         try {
             InputImage image = InputImage.fromBitmap(bitmap, 0);
@@ -78,6 +81,7 @@ public class MachineLearningService extends Service {
         }
     }
 
+    // Sends the labeling results (as a string) back to the UI via a broadcast intent.
     private void sendLabelsBackToUI(String imageUri, String labels) {
         Intent resultIntent = new Intent(ACTION_ANALYZE_IMAGE);
         resultIntent.putExtra(EXTRA_IMAGE_URI, imageUri);

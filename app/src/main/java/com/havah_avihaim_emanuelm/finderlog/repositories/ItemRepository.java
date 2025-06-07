@@ -14,7 +14,7 @@ public class ItemRepository {
         return needsLoading;
     }
 
-    // Accepts FoundItem or LostItem
+    // Sets the cached items list, sorted by report date (newest first), and marks loading as complete.
     public void setItems(List<? extends Item> items) {
         cachedItems.clear();
         items.sort((item1, item2) -> {
@@ -26,16 +26,19 @@ public class ItemRepository {
         needsLoading = false;
     }
 
+    // Adds a new item to the beginning of the cached list.
     public void addItem(Item item) {
         cachedItems.add(0, item);
     }
 
+    // Removes an item from the specified position if it is within bounds.
     public void removeItemAt(int position) {
         if (position >= 0 && position < cachedItems.size()) {
             cachedItems.remove(position);
         }
     }
 
+    // Retrieves the item at the specified position, or null if out of bounds.
     public Item getItemAt(int position) {
         if (position >= 0 && position < cachedItems.size()) {
             return cachedItems.get(position);
@@ -43,10 +46,12 @@ public class ItemRepository {
         return null;
     }
 
+    // Returns the number of cached items.
     public int getSize() {
         return cachedItems.size();
     }
 
+    // Returns the full list of cached items.
     public List<Item> getCachedItems() {
         return cachedItems;
     }

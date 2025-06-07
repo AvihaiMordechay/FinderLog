@@ -27,6 +27,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         this.matchList = matchList;
     }
 
+    // Inflates the match item layout and creates a new MatchViewHolder.
     @NonNull
     @Override
     public MatchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,6 +36,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         return new MatchViewHolder(view);
     }
 
+    // Binds a Match to the ViewHolder, sets title, image, and initializes nested RecyclerView for lost items with expand/collapse behavior.
     @Override
     public void onBindViewHolder(@NonNull MatchViewHolder holder, int position) {
         Match match = matchList.get(position);
@@ -60,11 +62,13 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         });
     }
 
+    // Returns the total number of matches in the list.
     @Override
     public int getItemCount() {
         return matchList.size();
     }
 
+    // Holds references to UI components for a match item and tracks expanded state for showing lost items.
     public static class MatchViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle;
         ImageView imageViewMatch;

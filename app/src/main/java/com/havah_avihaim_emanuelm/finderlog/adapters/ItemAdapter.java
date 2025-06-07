@@ -33,10 +33,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         this.showDeleteButton = showDeleteButton;
     }
 
+    // Called when the item list changes.
     public interface OnItemListChangedListener {
         void onListChanged();
     }
 
+    // ViewHolder class holds references to UI components for found and lost items and binds data to them.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, description, status, reportDate;
         ImageView imageView; // Only for FoundItem
@@ -66,6 +68,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             }
         }
 
+        // Binds an Item to the ViewHolder UI, setting text, images, and handling expand/collapse and delete actions.
         public void bind(Item item, int position, ItemRepository repository,
                          RecyclerView.Adapter adapter, OnItemListChangedListener listChangedListener,boolean showDeleteButton) {
             title.setText(item.getTitle());
@@ -111,6 +114,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         }
     }
 
+    // Returns the view type (found or lost) based on the item at the given position.
     @Override
     public int getItemViewType(int position) {
         Item item = repository.getItemAt(position);
@@ -118,6 +122,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         else return TYPE_LOST;
     }
 
+    // Creates a new ViewHolder based on the view type, inflating the corresponding layout.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -132,11 +137,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         return new ViewHolder(view, viewType);
     }
 
+    // Binds the item data at the given position to the provided ViewHolder.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(repository.getItemAt(position), position, repository, this, listChangedListener,showDeleteButton);
     }
 
+    // Returns the total number of items in the repository.
     @Override
     public int getItemCount() {
         return repository.getSize();
