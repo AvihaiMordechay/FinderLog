@@ -42,7 +42,7 @@ public class CameraHelper {
     private String pendingMimeType;
 
     public CameraHelper(Context context, PreviewView previewView, StorageService storageService,
-                        FirestoreService firestoreService, MachineLearningService machineLearningService) {
+                        FirestoreService firestoreService) {
         this.context = context;
         this.previewView = previewView;
         this.storageService = storageService;
