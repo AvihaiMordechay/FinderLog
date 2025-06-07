@@ -1,6 +1,6 @@
-package com.havah_avihaim_emanuelm.finderlog.adapters.Item;
+package com.havah_avihaim_emanuelm.finderlog.repositories;
 
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
+import com.havah_avihaim_emanuelm.finderlog.items.Item;
 
 import java.util.ArrayList;
 import java.util.Date;

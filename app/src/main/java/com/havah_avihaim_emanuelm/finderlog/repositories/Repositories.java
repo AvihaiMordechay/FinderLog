@@ -1,7 +1,4 @@
-package com.havah_avihaim_emanuelm.finderlog.adapters;
-
-import com.havah_avihaim_emanuelm.finderlog.adapters.Item.ItemRepository;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Matches.MatchRepository;
+package com.havah_avihaim_emanuelm.finderlog.repositories;
 
 public class Repositories {
     private static final ItemRepository foundRepo = new ItemRepository();

@@ -1,13 +1,11 @@
-package com.havah_avihaim_emanuelm.finderlog.firebase.storage;
+package com.havah_avihaim_emanuelm.finderlog.firebase;
 
 import static com.google.common.io.Files.getFileExtension;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
-package com.havah_avihaim_emanuelm.finderlog.adapters.Item;
+package com.havah_avihaim_emanuelm.finderlog.adapters;
 
-import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getMatchRepo;
+import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getMatchRepo;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.havah_avihaim_emanuelm.finderlog.R;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.LostItem;
+import com.havah_avihaim_emanuelm.finderlog.repositories.ItemRepository;
+import com.havah_avihaim_emanuelm.finderlog.firebase.FirestoreService;
+import com.havah_avihaim_emanuelm.finderlog.items.FoundItem;
+import com.havah_avihaim_emanuelm.finderlog.items.Item;
+import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 

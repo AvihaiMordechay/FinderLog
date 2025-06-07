@@ -1,6 +1,6 @@
 package com.havah_avihaim_emanuelm.finderlog.activities;
 
-import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getLostRepo;
+import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getLostRepo;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -38,11 +38,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.havah_avihaim_emanuelm.finderlog.MatchAlgorithm;
+import com.havah_avihaim_emanuelm.finderlog.matches.MatchAlgorithm;
 import com.havah_avihaim_emanuelm.finderlog.R;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.LostItem;
+import com.havah_avihaim_emanuelm.finderlog.repositories.Repositories;
+import com.havah_avihaim_emanuelm.finderlog.items.FoundItem;
+import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
 import com.havah_avihaim_emanuelm.finderlog.camera.CameraHelper;
 import com.havah_avihaim_emanuelm.finderlog.camera.GalleryHelper;
 

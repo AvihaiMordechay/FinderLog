@@ -1,4 +1,4 @@
-package com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit;
+package com.havah_avihaim_emanuelm.finderlog.firebase;
 
 import android.app.Service;
 import android.content.Intent;

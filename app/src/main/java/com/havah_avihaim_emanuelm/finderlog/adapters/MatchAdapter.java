@@ -1,4 +1,4 @@
-package com.havah_avihaim_emanuelm.finderlog.adapters.Matches;
+package com.havah_avihaim_emanuelm.finderlog.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,9 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.havah_avihaim_emanuelm.finderlog.R;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Item.ItemAdapter;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Item.ItemRepository;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Match;
+import com.havah_avihaim_emanuelm.finderlog.repositories.ItemRepository;
+import com.havah_avihaim_emanuelm.finderlog.matches.Match;
 
 import java.util.List;
 

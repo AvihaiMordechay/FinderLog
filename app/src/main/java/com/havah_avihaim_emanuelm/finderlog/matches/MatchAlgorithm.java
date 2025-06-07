@@ -1,9 +1,9 @@
-package com.havah_avihaim_emanuelm.finderlog;
+package com.havah_avihaim_emanuelm.finderlog.matches;
 
 import static com.havah_avihaim_emanuelm.finderlog.activities.MainActivity.CHANNEL_ID;
-import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getFoundRepo;
-import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getLostRepo;
-import static com.havah_avihaim_emanuelm.finderlog.adapters.Repositories.getMatchRepo;
+import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getFoundRepo;
+import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getLostRepo;
+import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getMatchRepo;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,12 +18,12 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FoundItem;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Item;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.LostItem;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Match;
-import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
+import com.havah_avihaim_emanuelm.finderlog.R;
+import com.havah_avihaim_emanuelm.finderlog.firebase.FirestoreService;
+import com.havah_avihaim_emanuelm.finderlog.items.FoundItem;
+import com.havah_avihaim_emanuelm.finderlog.items.Item;
+import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
+import com.havah_avihaim_emanuelm.finderlog.firebase.MachineLearningService;
 
 import java.util.ArrayList;
 import java.util.Arrays;

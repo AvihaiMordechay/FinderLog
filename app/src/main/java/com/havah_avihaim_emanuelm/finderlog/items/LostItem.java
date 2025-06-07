@@ -1,7 +1,6 @@
-package com.havah_avihaim_emanuelm.finderlog.firebase.firestore;
+package com.havah_avihaim_emanuelm.finderlog.items;
 
 import java.util.Date;
-import java.util.List;
 
 public class LostItem implements Item {
     private String id;

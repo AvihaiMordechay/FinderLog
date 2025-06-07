@@ -8,10 +8,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.havah_avihaim_emanuelm.finderlog.MatchAlgorithm;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.FirestoreService;
-import com.havah_avihaim_emanuelm.finderlog.firebase.ml_kit.MachineLearningService;
-import com.havah_avihaim_emanuelm.finderlog.firebase.storage.StorageService;
+import com.havah_avihaim_emanuelm.finderlog.matches.MatchAlgorithm;
+import com.havah_avihaim_emanuelm.finderlog.firebase.FirestoreService;
+import com.havah_avihaim_emanuelm.finderlog.firebase.MachineLearningService;
+import com.havah_avihaim_emanuelm.finderlog.firebase.StorageService;
 
 public class GalleryHelper {
 

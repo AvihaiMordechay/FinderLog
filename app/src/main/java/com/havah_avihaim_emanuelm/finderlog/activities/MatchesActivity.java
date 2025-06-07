@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Matches.MatchAdapter;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
-import com.havah_avihaim_emanuelm.finderlog.firebase.firestore.Match;
+import com.havah_avihaim_emanuelm.finderlog.adapters.MatchAdapter;
+import com.havah_avihaim_emanuelm.finderlog.repositories.Repositories;
+import com.havah_avihaim_emanuelm.finderlog.matches.Match;
 
 import java.util.List;
 

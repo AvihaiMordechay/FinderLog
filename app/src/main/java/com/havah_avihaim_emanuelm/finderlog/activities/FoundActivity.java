@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Item.ItemAdapter;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Item.ItemRepository;
-import com.havah_avihaim_emanuelm.finderlog.adapters.Repositories;
+import com.havah_avihaim_emanuelm.finderlog.adapters.ItemAdapter;
+import com.havah_avihaim_emanuelm.finderlog.repositories.ItemRepository;
+import com.havah_avihaim_emanuelm.finderlog.repositories.Repositories;
 
 public class FoundActivity extends BaseActivity {
 

@@ -1,8 +1,12 @@
-package com.havah_avihaim_emanuelm.finderlog.firebase.firestore;
+package com.havah_avihaim_emanuelm.finderlog.firebase;
 
 import android.util.Log;
 
 import com.google.firebase.firestore.*;
+import com.havah_avihaim_emanuelm.finderlog.items.FoundItem;
+import com.havah_avihaim_emanuelm.finderlog.items.Item;
+import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
+import com.havah_avihaim_emanuelm.finderlog.matches.Match;
 
 import java.util.*;
 
@@ -23,7 +27,7 @@ public class FirestoreService {
     /**
      * Items:
      */
-    public void addItem(Item item,  Listener<Item> callback) {
+    public void addItem(Item item, ResultCallback<Item> callback) {
         String collection = getCollectionName(item);
         db.collection(collection)
                 .add(item)
@@ -40,7 +44,7 @@ public class FirestoreService {
     }
 
 
-    public void getItems(Class<? extends Item> clazz, Listener<List<? extends Item>> callback) {
+    public void getItems(Class<? extends Item> clazz, ResultCallback<List<? extends Item>> callback) {
         String collection = getCollectionName(clazz);
         db.collection(collection)
                 .get()
@@ -114,7 +118,7 @@ public class FirestoreService {
     }
 
 
-    public void getAllMatches(Listener<List<Match>> callback) {
+    public void getAllMatches(ResultCallback<List<Match>> callback) {
         db.collection("matches")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {

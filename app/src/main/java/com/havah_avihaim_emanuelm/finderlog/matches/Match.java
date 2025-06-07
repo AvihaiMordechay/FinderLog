@@ -1,4 +1,7 @@
-package com.havah_avihaim_emanuelm.finderlog.firebase.firestore;
+package com.havah_avihaim_emanuelm.finderlog.matches;
+
+import com.havah_avihaim_emanuelm.finderlog.items.Item;
+import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
 
 import java.util.List;
 
