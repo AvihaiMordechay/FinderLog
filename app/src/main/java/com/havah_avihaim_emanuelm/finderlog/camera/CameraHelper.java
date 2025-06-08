@@ -41,6 +41,7 @@ public class CameraHelper {
     private ImageCapture imageCapture;
     private final StorageService storageService = StorageService.getSharedInstance();
 
+    ProcessCameraProvider cameraProvider;
     private Uri pendingImageUri;
 
     public CameraHelper(Context context, PreviewView previewView) {
@@ -53,7 +54,7 @@ public class CameraHelper {
 
         cameraProviderFuture.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider = cameraProviderFuture.get();
 
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
@@ -147,6 +148,10 @@ public class CameraHelper {
                 Log.e("CameraX", "Upload failed:");
             }
         });
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+            cameraProvider = null;
+        }
     }
 
     public void clearPendingImage() {
