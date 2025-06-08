@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.content.pm.PackageManager;
@@ -33,6 +34,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import com.havah_avihaim_emanuelm.finderlog.utils.NetworkAwareDataLoader;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.card.MaterialCardView;
@@ -40,8 +42,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.havah_avihaim_emanuelm.finderlog.matches.MatchAlgorithm;
 import com.havah_avihaim_emanuelm.finderlog.R;
-import com.havah_avihaim_emanuelm.finderlog.repositories.Repositories;
-import com.havah_avihaim_emanuelm.finderlog.items.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
 import com.havah_avihaim_emanuelm.finderlog.camera.CameraHelper;
 import com.havah_avihaim_emanuelm.finderlog.camera.GalleryHelper;
@@ -54,6 +54,7 @@ import java.util.Locale;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends BaseActivity {
@@ -113,16 +114,6 @@ public class MainActivity extends BaseActivity {
         HorizontalScrollView techScroll = findViewById(R.id.techItemsScroll);
         HorizontalScrollView otherScroll = findViewById(R.id.otherItemsScroll);
         // Variables End.
-
-        if (Repositories.getFoundRepo().needsLoading()) {
-            firestoreService.getItems(FoundItem.class, Repositories.getFoundRepo()::setItems);
-        }
-        if (getLostRepo().needsLoading()) {
-            firestoreService.getItems(LostItem.class, getLostRepo()::setItems);
-        }
-        if (Repositories.getMatchRepo().needsLoading()) {
-            firestoreService.getAllMatches(Repositories.getMatchRepo()::setMatches);
-        }
 
         setSupportActionBar(toolbar);
         Window window = getWindow();
@@ -299,7 +290,10 @@ public class MainActivity extends BaseActivity {
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         });
         createNotificationChannel();
+        NetworkAwareDataLoader.loadData(this, firestoreService);
     }
+
+
 
     private AlertDialog.Builder buildAboutDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -409,16 +403,22 @@ public class MainActivity extends BaseActivity {
         }
         // Create LostItem object and add to FireStore
         LostItem lostItem = new LostItem(clientName, clientPhone, description, "open", title, lostDate, new Date());
-        firestoreService.addItem(lostItem, item -> {
-            getLostRepo().addItem(item);
-            MatchAlgorithm matchAlgorithm = new MatchAlgorithm(this);
-            new Thread(() -> matchAlgorithm.startMatchingThread(matchAlgorithm.convertToList(description), lostItem)).start();
-        });
+        if (NetworkAwareDataLoader.isNetworkAvailable(this)) {
+            firestoreService.addItem(lostItem, item -> {
+                getLostRepo().addItem(item);
+                MatchAlgorithm matchAlgorithm = new MatchAlgorithm(this);
+                new Thread(() -> matchAlgorithm.startMatchingThread(matchAlgorithm.convertToList(description), lostItem)).start();
+            });
+            // Show popup message
+            View rootView = findViewById(android.R.id.content);
+            Snackbar snackbar = Snackbar.make(rootView, "Report submitted!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        } else {
+            Toast toast = Toast.makeText(this, "No internet connection. Please connect and try again.", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);  // X=0, Y=0
+            toast.show();
+        }
 
-        // Show popup message
-        View rootView = findViewById(android.R.id.content);
-        Snackbar snackbar = Snackbar.make(rootView, "Report submitted!", Snackbar.LENGTH_SHORT);
-        snackbar.show();
 
         etTitle.setText("");
         etClientName.setText("");

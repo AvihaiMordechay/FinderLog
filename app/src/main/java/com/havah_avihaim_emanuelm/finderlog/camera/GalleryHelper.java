@@ -6,11 +6,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.havah_avihaim_emanuelm.finderlog.matches.MatchAlgorithm;
 import com.havah_avihaim_emanuelm.finderlog.firebase.MachineLearningService;
 import com.havah_avihaim_emanuelm.finderlog.firebase.StorageService;
+import com.havah_avihaim_emanuelm.finderlog.utils.NetworkAwareDataLoader;
 
 public class GalleryHelper {
 
@@ -18,7 +20,6 @@ public class GalleryHelper {
     private final StorageService storageService = StorageService.getSharedInstance();
 
     private Uri pendingImageUri;
-    private String pendingMimeType;
 
     public GalleryHelper(Context context) {
         this.context = context;
@@ -35,11 +36,9 @@ public class GalleryHelper {
         )) {
             if (cursor != null && cursor.moveToFirst()) {
                 long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE));
-                String mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE));
 
                 if (size < 3000000) {
                     this.pendingImageUri = imageUri;
-                    this.pendingMimeType = mimeType;
                     // Trigger callback to show preview and Save/Cancel options
                     onReadyToDisplay.run();
                 } else {
@@ -57,10 +56,16 @@ public class GalleryHelper {
             Log.e("CameraX", "No photo to upload:");
             return;
         }
+        if (!NetworkAwareDataLoader.isNetworkAvailable(context)) {
+            Toast toast = Toast.makeText(context, "No internet connection. Please connect to upload the image.", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);  // X=0, Y=0
+            toast.show();
+            return;
+        }
 
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
-                new MatchAlgorithm(context, pendingMimeType, this::clearPendingImage, imageTitle);
+                new MatchAlgorithm(context, this::clearPendingImage, imageTitle);
                 Intent intent = new Intent(context, MachineLearningService.class);
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
                 intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);
@@ -73,7 +78,6 @@ public class GalleryHelper {
 
     public void clearPendingImage() {
         pendingImageUri = null;
-        pendingMimeType = null;
     }
 
 }

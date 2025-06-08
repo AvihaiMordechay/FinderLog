@@ -2,11 +2,13 @@ package com.havah_avihaim_emanuelm.finderlog.adapters;
 
 import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getMatchRepo;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +20,7 @@ import com.havah_avihaim_emanuelm.finderlog.firebase.FirestoreService;
 import com.havah_avihaim_emanuelm.finderlog.items.FoundItem;
 import com.havah_avihaim_emanuelm.finderlog.items.Item;
 import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
+import com.havah_avihaim_emanuelm.finderlog.utils.NetworkAwareDataLoader;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private static final int TYPE_FOUND = 0;
@@ -99,20 +102,27 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                 if (showDeleteButton) {
                     deleteButton.setVisibility(View.VISIBLE);
                     deleteButton.setOnClickListener(v -> {
-                        repository.removeItemAt(position);
-                        adapter.notifyItemRemoved(position);
-                        firestoreService.deleteLostItemFromMatches(lostItem);
-                        firestoreService.deleteItem(LostItem.class, lostItem.getId());
-                        getMatchRepo().removeLostItem(lostItem);
-                        if (repository.getSize() == 0 && listChangedListener != null) {
-                            listChangedListener.onListChanged();
-                        }
+                        if (NetworkAwareDataLoader.isNetworkAvailable(v.getContext())) {
+                            repository.removeItemAt(position);
+                            adapter.notifyItemRemoved(position);
+                            firestoreService.deleteLostItemFromMatches(lostItem);
+                            firestoreService.deleteItem(LostItem.class, lostItem.getId());
+                            getMatchRepo().removeLostItem(lostItem);
+                            if (repository.getSize() == 0 && listChangedListener != null) {
+                                listChangedListener.onListChanged();
+                            }
 
+                        } else {
+                            Toast toast = Toast.makeText(v.getContext(), "No internet connection. Please connect and try again.", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);  // X=0, Y=0
+                            toast.show();
+                        }
                     });
                 }
             }
         }
     }
+
 
     // Returns the view type (found or lost) based on the item at the given position.
     @Override

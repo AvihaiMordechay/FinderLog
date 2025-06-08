@@ -6,16 +6,14 @@ public class FoundItem implements Item {
     private String id;
     private String description;
     private String imgPath;
-    private String imgType;
     private String status;
     private String title;
     private Date foundDate;
     @SuppressWarnings("unused")
     public FoundItem() {}
-    public FoundItem(String title, String imgPath, String imgType, String description) {
+    public FoundItem(String title, String imgPath, String description) {
         this.title = title;
         this.imgPath = imgPath;
-        this.imgType = imgType;
         this.status = "open";
         this.foundDate = new Date();
         this.description = description;
@@ -58,5 +56,4 @@ public class FoundItem implements Item {
         return id;
     }
 
-    public String getImgType() {return imgType;}
 }
