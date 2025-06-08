@@ -148,12 +148,15 @@ public class CameraHelper {
                 Log.e("CameraX", "Upload failed:");
             }
         });
+        closeCamera();
+    }
+    public void closeCamera()
+    {
         if (cameraProvider != null) {
             cameraProvider.unbindAll();
             cameraProvider = null;
         }
     }
-
     public void clearPendingImage() {
         pendingImageUri = null;
     }

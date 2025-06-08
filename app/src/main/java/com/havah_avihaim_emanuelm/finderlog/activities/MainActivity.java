@@ -27,6 +27,7 @@ import android.widget.ScrollView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowCompat;
@@ -202,6 +203,7 @@ public class MainActivity extends BaseActivity {
             btnAddReport.setVisibility(View.VISIBLE);
             btnOpenCamera.setVisibility(View.VISIBLE);
             uploadButton.setVisibility(View.VISIBLE);
+            cameraHelper.closeCamera();
         });
 
         // report button + Report Form implementation
@@ -292,7 +294,43 @@ public class MainActivity extends BaseActivity {
         createNotificationChannel();
         NetworkAwareDataLoader.loadData(this, firestoreService);
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (allPermissionsGranted()) {
+                cameraHelper.startCamera();
+                previewView.setVisibility(View.VISIBLE);
+                findViewById(R.id.btnCapture).setVisibility(View.VISIBLE);
+                findViewById(R.id.btnCloseCamera).setVisibility(View.VISIBLE);
+                findViewById(R.id.cardAddReport).setVisibility(View.GONE);
+                findViewById(R.id.cardOpenCamera).setVisibility(View.GONE);
+                findViewById(R.id.cardUploadImage).setVisibility(View.GONE);
+            } else {
+                for (String permission : REQUIRED_PERMISSIONS) {
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                        showPermissionDeniedDialog();
+                        return;
+                    }
+                }
+                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private void showPermissionDeniedDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Permission Required")
+                .setMessage("Camera permission was denied permanently. Please enable it manually in settings.")
+                .setPositiveButton("Go to Settings", (dialog, which) -> {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivity(intent);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
 
 
     private AlertDialog.Builder buildAboutDialog(Context context) {
