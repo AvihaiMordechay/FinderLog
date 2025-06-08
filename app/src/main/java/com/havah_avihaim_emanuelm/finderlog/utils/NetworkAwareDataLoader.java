@@ -42,7 +42,7 @@ public class NetworkAwareDataLoader {
         } else {
             new AlertDialog.Builder(context)
                     .setTitle("No Internet Connection")
-                    .setMessage("No internet connection detected.\nNew data could not be loaded.")
+                    .setMessage("New data could not be loaded.")
                     .setPositiveButton("Retry", (dialog, which) -> loadData(context, firestoreService))
                     .setNegativeButton("Cancel", null)
                     .show();

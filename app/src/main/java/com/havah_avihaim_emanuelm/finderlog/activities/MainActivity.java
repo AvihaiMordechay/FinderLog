@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.content.pm.PackageManager;
@@ -452,9 +451,11 @@ public class MainActivity extends BaseActivity {
             Snackbar snackbar = Snackbar.make(rootView, "Report submitted!", Snackbar.LENGTH_SHORT);
             snackbar.show();
         } else {
-            Toast toast = Toast.makeText(this, "No internet connection. Please connect and try again.", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);  // X=0, Y=0
-            toast.show();
+            new AlertDialog.Builder(this)
+                    .setTitle("No internet connection")
+                    .setMessage("Failed to upload report. \nPlease check your internet connection and try again.")
+                    .setPositiveButton("OK", null)
+                    .show();
         }
 
 

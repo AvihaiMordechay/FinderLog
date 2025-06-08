@@ -2,13 +2,12 @@ package com.havah_avihaim_emanuelm.finderlog.adapters;
 
 import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getMatchRepo;
 
-import android.view.Gravity;
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -113,9 +112,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                             }
 
                         } else {
-                            Toast toast = Toast.makeText(v.getContext(), "No internet connection. Please connect and try again.", Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);  // X=0, Y=0
-                            toast.show();
+                            new AlertDialog.Builder(v.getContext())
+                                    .setTitle("No internet connection")
+                                    .setMessage("Failed to delete. \nPlease check your internet connection and try again.")
+                                    .setPositiveButton("OK", null)
+                                    .show();
                         }
                     });
                 }
