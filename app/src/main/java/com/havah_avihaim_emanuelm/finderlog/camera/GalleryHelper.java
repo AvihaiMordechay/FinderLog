@@ -1,12 +1,12 @@
 package com.havah_avihaim_emanuelm.finderlog.camera;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.Toast;
 
 import com.havah_avihaim_emanuelm.finderlog.matches.MatchAlgorithm;
@@ -57,9 +57,11 @@ public class GalleryHelper {
             return;
         }
         if (!NetworkAwareDataLoader.isNetworkAvailable(context)) {
-            Toast toast = Toast.makeText(context, "No internet connection. Please connect to upload the image.", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);  // X=0, Y=0
-            toast.show();
+            new AlertDialog.Builder(context)
+                    .setTitle("No internet connection")
+                    .setMessage("Failed to upload image. \nPlease check your internet connection and try again.")
+                    .setPositiveButton("OK", null)
+                    .show();
             return;
         }
 

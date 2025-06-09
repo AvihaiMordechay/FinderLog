@@ -5,6 +5,7 @@ import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.get
 import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getLostRepo;
 import static com.havah_avihaim_emanuelm.finderlog.repositories.Repositories.getMatchRepo;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -69,9 +69,11 @@ public class MatchAlgorithm {
 
             if (imageUri != null) {
                 if (!NetworkAwareDataLoader.isNetworkAvailable(context)) {
-                    Toast toast = Toast.makeText(context, "No internet connection. Cannot upload item.", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER, 0, 0);  // X=0, Y=0
-                    toast.show();
+                    new AlertDialog.Builder(context)
+                            .setTitle("No internet connection")
+                            .setMessage("Failed to upload item. \nPlease check your internet connection and try again.")
+                            .setPositiveButton("OK", null)
+                            .show();
                     context.unregisterReceiver(this);
                     return;
                 }
