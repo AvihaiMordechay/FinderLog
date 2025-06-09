@@ -100,6 +100,7 @@ public class CameraHelper {
                         } else {
                             Log.e("CameraX", "Failed to decode bitmap from saved image");
                         }
+                        closeCamera();
 
                         if (onReadyToDisplay != null) {
                             onReadyToDisplay.run();
@@ -109,6 +110,7 @@ public class CameraHelper {
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
                         Log.e("CameraX", "Photo capture failed: " + exception.getMessage(), exception);
+                        closeCamera();
                     }
                 }
         );
@@ -166,8 +168,6 @@ public class CameraHelper {
                 Log.e("CameraX", "Upload failed:");
             }
         });
-        // Clear the pending image URI and close the camera
-        closeCamera();
     }
     // A function to close the camera
     public void closeCamera()

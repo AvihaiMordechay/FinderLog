@@ -19,7 +19,6 @@ public class LostActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lost);
-        NetworkAwareDataLoader.loadData(this, firestoreService);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewLost);
         setupBottomNavigation(bottomNavigationView, R.id.nav_lost);
@@ -27,13 +26,15 @@ public class LostActivity extends BaseActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewLost);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-        ItemRepository lostRepo = Repositories.getLostRepo();
-        updateEmptyState(recyclerView, lostRepo.getSize()==0);
-        ItemAdapter adapter = new ItemAdapter(lostRepo,
-                () -> updateEmptyState(recyclerView,lostRepo.getSize()==0),true);
-        recyclerView.setAdapter(adapter);
-
+        NetworkAwareDataLoader.loadData(this, firestoreService, () -> {
+            runOnUiThread(() -> {
+                ItemRepository lostRepo = Repositories.getLostRepo();
+                updateEmptyState(recyclerView, lostRepo.getSize()==0);
+                ItemAdapter adapter = new ItemAdapter(lostRepo,
+                        () -> updateEmptyState(recyclerView,lostRepo.getSize()==0),true);
+                recyclerView.setAdapter(adapter);
+            });
+        });
     }
 
 }

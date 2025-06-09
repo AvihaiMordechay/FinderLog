@@ -317,8 +317,6 @@ public class MainActivity extends BaseActivity {
         });
         // Create notification channel
         createNotificationChannel();
-        // Load data from FireStore
-        NetworkAwareDataLoader.loadData(this, firestoreService);
     }
     // Handle permission request result
     @Override

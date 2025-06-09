@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.havah_avihaim_emanuelm.finderlog.R;
+import com.havah_avihaim_emanuelm.finderlog.adapters.ItemAdapter;
 import com.havah_avihaim_emanuelm.finderlog.adapters.MatchAdapter;
+import com.havah_avihaim_emanuelm.finderlog.repositories.ItemRepository;
 import com.havah_avihaim_emanuelm.finderlog.repositories.Repositories;
 import com.havah_avihaim_emanuelm.finderlog.matches.Match;
 import com.havah_avihaim_emanuelm.finderlog.utils.NetworkAwareDataLoader;
@@ -22,7 +24,6 @@ public class MatchesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_matches);
-        NetworkAwareDataLoader.loadData(this, firestoreService);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewMatches);
         setupBottomNavigation(bottomNavigationView, R.id.nav_matches);
@@ -30,9 +31,13 @@ public class MatchesActivity extends BaseActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewMatches);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Match> matches = Repositories.getMatchRepo().getMatches();
-        MatchAdapter adapter = new MatchAdapter(this,matches);
-        recyclerView.setAdapter(adapter);
+        NetworkAwareDataLoader.loadData(this, firestoreService, () -> {
+            runOnUiThread(() -> {
+                List<Match> matches = Repositories.getMatchRepo().getMatches();
+                MatchAdapter adapter = new MatchAdapter(this,matches);
+                recyclerView.setAdapter(adapter);
+            });
+        });
 
     }
 
