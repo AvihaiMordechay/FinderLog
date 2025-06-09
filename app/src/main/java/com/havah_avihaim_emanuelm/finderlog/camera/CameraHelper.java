@@ -47,21 +47,21 @@ public class CameraHelper {
         this.context = context;
         this.previewView = previewView;
     }
-
+    // A function to start the camera preview and capture photos
     public void startCamera() {
+        // Initialize the camera provider
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(context);
-
+        // Add a listener to the camera provider future
         cameraProviderFuture.addListener(() -> {
             try {
+                // Get the camera provider
                 cameraProvider = cameraProviderFuture.get();
-
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
+                // Choose the camera selector (front)
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
-
                 imageCapture = new ImageCapture.Builder().build();
-
+                // Unbind all use cases before binding
                 cameraProvider.unbindAll();
                 cameraProvider.bindToLifecycle(
                         (MainActivity) context,
@@ -75,17 +75,15 @@ public class CameraHelper {
             }
         }, ContextCompat.getMainExecutor(context));
     }
-
+    // A function that takes a photo and saves it to a file
     public void takePhoto(Runnable onReadyToDisplay) {
         if (imageCapture == null) return;
-
         File photoFile = new File(getOutputDirectory(),
                 new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
                         .format(new Date()) + ".jpg");
-
+        // Create output options object which contains file + metadata
         ImageCapture.OutputFileOptions outputOptions =
                 new ImageCapture.OutputFileOptions.Builder(photoFile).build();
-
         imageCapture.takePicture(
                 outputOptions,
                 ContextCompat.getMainExecutor(context),
@@ -115,20 +113,23 @@ public class CameraHelper {
                 }
         );
     }
-
+    // A function to get the output directory for the photo
     private File getOutputDirectory() {
+        // Get the external storage directory
         File mediaDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        // If the directory exists, return it
         if (mediaDir != null && mediaDir.exists())
             return mediaDir;
         else
             return context.getFilesDir();
     }
-
+    // A function to confirm and upload the image
     public void confirmAndUploadImage(String imageTitle) {
         if (pendingImageUri == null) {
             Log.e("CameraX", "No photo to upload:");
             return;
         }
+        // Check for internet connection
         if (!NetworkAwareDataLoader.isNetworkAvailable(context)) {
             new AlertDialog.Builder(context)
                     .setTitle("No internet connection")
@@ -137,20 +138,38 @@ public class CameraHelper {
                     .show();
             return;
         }
-
+        // Upload the image to Firebase Storage
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
                 new MatchAlgorithm(context, this::clearPendingImage, imageTitle);
+                // Start the Machine Learning service
                 Intent intent = new Intent(context, MachineLearningService.class);
+                // Send the image path to the service
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
+                // Send the image path to the service
                 intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);
+                // Start the service
                 context.startService(intent);
+                // Delete the photo file after upload
+                String path = pendingImageUri.getPath();
+                if(path!=null)
+                {
+                    File file = new File(pendingImageUri.getPath());
+                    boolean deleted = file.delete();
+                    if (deleted) {
+                        Log.d("CameraX", "Photo file deleted after upload: " + file.getAbsolutePath());
+                    } else {
+                        Log.e("CameraX", "Failed to delete photo file: " + file.getAbsolutePath());
+                    }
+                }
             } else {
                 Log.e("CameraX", "Upload failed:");
             }
         });
+        // Clear the pending image URI and close the camera
         closeCamera();
     }
+    // A function to close the camera
     public void closeCamera()
     {
         if (cameraProvider != null) {
@@ -158,17 +177,20 @@ public class CameraHelper {
             cameraProvider = null;
         }
     }
+    // A function to clear the pending image URI
     public void clearPendingImage() {
         pendingImageUri = null;
     }
-
+    // A function to get the correctly oriented bitmap from the image path
     private Bitmap getCorrectlyOrientedBitmap(String imagePath) {
+        // Get the bitmap from the image path
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         try {
+            // Get the orientation of the image
             ExifInterface exif = new ExifInterface(imagePath);
             int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
             Matrix matrix = new Matrix();
-
+            // Rotate the bitmap based on the orientation
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
                     matrix.postRotate(90);
@@ -182,7 +204,7 @@ public class CameraHelper {
                 default:
                     return bitmap;
             }
-
+            // Return the rotated bitmap
             return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         } catch (Exception e) {
             Log.e("ImageUtils", "Failed to rotate image from path: " + imagePath, e);

@@ -24,8 +24,9 @@ public class GalleryHelper {
     public GalleryHelper(Context context) {
         this.context = context;
     }
-
+    // A function to handle the selected image
     public void handleSelectedImage(Uri imageUri, Runnable onReadyToDisplay) {
+        // Check the size of the image
         try (Cursor cursor = context.getContentResolver().query(
                 imageUri,
                 new String[]{
@@ -35,8 +36,9 @@ public class GalleryHelper {
                 null, null, null
         )) {
             if (cursor != null && cursor.moveToFirst()) {
+                // Get the size of the image
                 long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE));
-
+                // Check if the size is less than 3MB and the MIME type is an image
                 if (size < 3000000) {
                     this.pendingImageUri = imageUri;
                     // Trigger callback to show preview and Save/Cancel options
@@ -50,12 +52,13 @@ public class GalleryHelper {
             Toast.makeText(context, "Failed to read image info", Toast.LENGTH_SHORT).show();
         }
     }
-
+    // A function to confirm and upload the image
     public void confirmAndUploadImage(String imageTitle) {
         if (pendingImageUri == null) {
             Log.e("CameraX", "No photo to upload:");
             return;
         }
+        // Check for internet connection
         if (!NetworkAwareDataLoader.isNetworkAvailable(context)) {
             new AlertDialog.Builder(context)
                     .setTitle("No internet connection")
@@ -64,20 +67,23 @@ public class GalleryHelper {
                     .show();
             return;
         }
-
+        // Upload the image to Firebase Storage
         storageService.uploadFile(pendingImageUri, storagePath -> {
             if (storagePath != null) {
+                // Start the Machine Learning service
                 new MatchAlgorithm(context, this::clearPendingImage, imageTitle);
                 Intent intent = new Intent(context, MachineLearningService.class);
+                // Send the image path to the service
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);
                 intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);
+                // Start the service
                 context.startService(intent);
             } else {
                 Log.e("CameraX", "Upload failed:");
             }
         });
     }
-
+    // A function to clear the pending image URI
     public void clearPendingImage() {
         pendingImageUri = null;
     }

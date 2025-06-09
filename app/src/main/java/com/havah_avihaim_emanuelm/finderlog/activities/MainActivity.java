@@ -77,55 +77,59 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        // Image Helpers:
+        previewView= findViewById(R.id.previewView);
+        galleryHelper = new GalleryHelper(this);
+        cameraHelper = new CameraHelper(this, previewView);
         // Variables Start:
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationViewReports);
         setupBottomNavigation(bottomNavigationView, R.id.nav_reports);
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        // report activity main cards:
         MaterialCardView uploadButton = findViewById(R.id.cardUploadImage);
-        previewView = findViewById(R.id.previewView);
+        MaterialCardView btnAddReport = findViewById(R.id.cardAddReport);
         MaterialCardView btnOpenCamera = findViewById(R.id.cardOpenCamera);
+        // open camera page buttons:
         Button btnCapture = findViewById(R.id.btnCapture);
         ImageButton btnCloseCamera = findViewById(R.id.btnCloseCamera);
-        MaterialCardView btnAddReport = findViewById(R.id.cardAddReport);
-        Button btnSubmitLostItem = findViewById(R.id.btnSubmitLostItem);
-        Button btnCancelLostItem = findViewById(R.id.btnCancelLostItem);
-        ScrollView lostItemForm = findViewById(R.id.lostItemForm);
-        ImageView imagePreview = findViewById(R.id.imagePreview);
-        LinearLayout cameraPreviewButtons = findViewById(R.id.cameraPreviewButtons);
-        Button btnRetake = findViewById(R.id.btnRetake);
         Button btnSaveFromCamera = findViewById(R.id.btnSaveFromCamera);
-        galleryHelper = new GalleryHelper(this);
-        cameraHelper = new CameraHelper(this, previewView);
+        LinearLayout cameraPreviewButtons = findViewById(R.id.cameraPreviewButtons);
+        // camera image preview:
+        ImageView imagePreview = findViewById(R.id.imagePreview);
+        Button btnRetake = findViewById(R.id.btnRetake);
+        EditText etCameraImageTitle = findViewById(R.id.etCameraImageTitle);
+        // gallery image preview:
         Button saveImageFromGallery = findViewById(R.id.saveImageFromGallery);
         Button cancelImageFromGallery = findViewById(R.id.cancelImageFromGallery);
         LinearLayout galleryPreviewButtons = findViewById(R.id.galleryPreviewButtons);
+        EditText etGalleryImageTitle = findViewById(R.id.etGalleryImageTitle);
+        // report activity main buttons:
+        Button btnSubmitLostItem = findViewById(R.id.btnSubmitLostItem);
+        Button btnCancelLostItem = findViewById(R.id.btnCancelLostItem);
+        ScrollView lostItemForm = findViewById(R.id.lostItemForm);
         ImageButton btnTogglePersonal = findViewById(R.id.btnTogglePersonal);
         ImageButton btnToggleClothing = findViewById(R.id.btnToggleClothing);
         ImageButton btnToggleTech = findViewById(R.id.btnToggleTech);
         ImageButton btnToggleOther = findViewById(R.id.btnToggleOther);
-        EditText etCameraImageTitle = findViewById(R.id.etCameraImageTitle);
-        EditText etGalleryImageTitle = findViewById(R.id.etGalleryImageTitle);
-
-
         HorizontalScrollView personalScroll = findViewById(R.id.personalItemsScroll);
         HorizontalScrollView clothingScroll = findViewById(R.id.clothingDetailsScroll);
         HorizontalScrollView techScroll = findViewById(R.id.techItemsScroll);
         HorizontalScrollView otherScroll = findViewById(R.id.otherItemsScroll);
         // Variables End.
 
+        // Toolbar handling:
         setSupportActionBar(toolbar);
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setStatusBarColor(Color.TRANSPARENT);
         toolbar.setNavigationIcon(R.drawable.dots);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-
+        // date picker:
         TextView tvLostDate = findViewById(R.id.etLostDate);
         String today = sdf.format(new Date());
         tvLostDate.setText(today);
-
         tvLostDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
@@ -175,7 +179,7 @@ public class MainActivity extends BaseActivity {
         // camera opening code:
         previewView.setVisibility(View.GONE);
         btnCapture.setVisibility(View.GONE);
-
+        // open camera button click and permissions check
         btnOpenCamera.setOnClickListener(v -> {
             // Request permissions if not granted
             if (allPermissionsGranted()) {
@@ -187,6 +191,7 @@ public class MainActivity extends BaseActivity {
                 btnOpenCamera.setVisibility(View.GONE);
                 uploadButton.setVisibility(View.GONE);
             } else {
+                // Request permissions if not granted
                 ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
             }
         });
@@ -194,8 +199,9 @@ public class MainActivity extends BaseActivity {
         // Capture button click listener
         btnCapture.setOnClickListener(v -> cameraHelper.takePhoto(() -> {
         }));
-
+        // Close button click listener
         btnCloseCamera.setOnClickListener(v -> {
+            // Hide the camera preview and buttons
             previewView.setVisibility(View.GONE);
             btnCapture.setVisibility(View.GONE);
             btnCloseCamera.setVisibility(View.GONE);
@@ -214,6 +220,7 @@ public class MainActivity extends BaseActivity {
             // Show the Form:
             lostItemForm.setVisibility(View.VISIBLE);
         });
+        // Cancel button click listener
         btnCancelLostItem.setOnClickListener(v -> {
             // clean the form:
             ((EditText) findViewById(R.id.etTitle)).setText("");
@@ -230,17 +237,18 @@ public class MainActivity extends BaseActivity {
             btnAddReport.setVisibility(View.VISIBLE);
             btnOpenCamera.setVisibility(View.VISIBLE);
         });
-
+        // Submit button click listener
         btnSubmitLostItem.setOnClickListener(v -> submitLostItemReport());
+        // Category buttons click listeners
         btnTogglePersonal.setOnClickListener(v ->
                 toggleScrollAndIcon(personalScroll, btnTogglePersonal, R.drawable.switch_on, R.drawable.switch_off));
-
+        // Category buttons click listeners
         btnToggleClothing.setOnClickListener(v -> toggleScrollAndIcon(clothingScroll, btnToggleClothing, R.drawable.switch_on, R.drawable.switch_off));
-
         btnToggleTech.setOnClickListener(v -> toggleScrollAndIcon(techScroll, btnToggleTech, R.drawable.switch_on, R.drawable.switch_off));
-
         btnToggleOther.setOnClickListener(v -> toggleScrollAndIcon(otherScroll, btnToggleOther, R.drawable.switch_on, R.drawable.switch_off));
+        // Retake button click listener
         btnRetake.setOnClickListener(v -> {
+            // Show the camera preview and buttons and clear the last image
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
             etCameraImageTitle.setVisibility(View.GONE);
@@ -254,7 +262,9 @@ public class MainActivity extends BaseActivity {
             btnCapture.setVisibility(View.VISIBLE);
             btnCloseCamera.setVisibility(View.VISIBLE);
         });
+        // Save button click listener
         btnSaveFromCamera.setOnClickListener(v -> {
+            // Hide the buttons:
             String imageTitle = etCameraImageTitle.getText().toString().trim();
             cameraHelper.confirmAndUploadImage(imageTitle);
             btnSaveFromCamera.setVisibility(View.GONE);
@@ -262,12 +272,15 @@ public class MainActivity extends BaseActivity {
             etCameraImageTitle.setVisibility(View.GONE);
             etCameraImageTitle.setText("");
             imagePreview.setVisibility(View.GONE);
+            // Show report page buttons:
             findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
             bitmapToProcess = null;
         });
+        //
         saveImageFromGallery.setOnClickListener(v -> {
+            // Hide the buttons:
             String imageTitle = etGalleryImageTitle.getText().toString().trim();
             galleryHelper.confirmAndUploadImage(imageTitle);
             imagePreview.setVisibility(View.GONE);
@@ -275,31 +288,41 @@ public class MainActivity extends BaseActivity {
             galleryPreviewButtons.setVisibility(View.GONE);
             etGalleryImageTitle.setVisibility(View.GONE);
             etGalleryImageTitle.setText("");
+            // Show report page buttons:
             findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         });
+        // Cancel button click listener
         cancelImageFromGallery.setOnClickListener(v -> {
+            // Hide the buttons:
             galleryHelper.clearPendingImage();
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
             galleryPreviewButtons.setVisibility(View.GONE);
             etGalleryImageTitle.setVisibility(View.GONE);
             etGalleryImageTitle.setText("");
+            // Show report page buttons:
             findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         });
+        // Create notification channel
         createNotificationChannel();
+        // Load data from FireStore
         NetworkAwareDataLoader.loadData(this, firestoreService);
     }
+    // Handle permission request result
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
+        // Check if the camera permission is granted
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            // Check if all permissions are granted
             if (allPermissionsGranted()) {
+                // start camera
                 cameraHelper.startCamera();
+                // Show the camera preview and buttons
                 previewView.setVisibility(View.VISIBLE);
                 findViewById(R.id.btnCapture).setVisibility(View.VISIBLE);
                 findViewById(R.id.btnCloseCamera).setVisibility(View.VISIBLE);
@@ -307,6 +330,7 @@ public class MainActivity extends BaseActivity {
                 findViewById(R.id.cardOpenCamera).setVisibility(View.GONE);
                 findViewById(R.id.cardUploadImage).setVisibility(View.GONE);
             } else {
+                // Show a dialog to explain why the permission is required
                 for (String permission : REQUIRED_PERMISSIONS) {
                     if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                         showPermissionDeniedDialog();
@@ -317,6 +341,7 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+    // Show a dialog to explain why the permission is required
     private void showPermissionDeniedDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Permission Required")
@@ -324,12 +349,11 @@ public class MainActivity extends BaseActivity {
                 .setPositiveButton("OK", null)
                 .show();
     }
-
-
+    // About dialog builder
     private AlertDialog.Builder buildAboutDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("About the App");
-
+        // Set the app name and version
         String message = "App Name: FinderLog\n" +
                 "Package: " + context.getPackageName() + "\n\n" +
                 "Android Version: " + android.os.Build.VERSION.RELEASE + "\n" +
@@ -354,12 +378,15 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
     }
-
+    // Image picker launcher
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                // Handle the result of the image picker
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    // Get the selected image URI
                     Uri imageUri = result.getData().getData();
                     if (imageUri != null) {
+                        // Handle the selected image
                         galleryHelper.handleSelectedImage(imageUri, () -> {
                             ImageView imagePreview = findViewById(R.id.imagePreview);
                             EditText etGalleryImageTitle = findViewById(R.id.etGalleryImageTitle);
@@ -384,48 +411,49 @@ public class MainActivity extends BaseActivity {
         }
         return true;
     }
-
     public void showCameraImagePreview(Bitmap bitmap) {
+        // Hide the buttons:
         findViewById(R.id.btnCapture).setVisibility(View.GONE);
         findViewById(R.id.btnCloseCamera).setVisibility(View.GONE);
         findViewById(R.id.previewView).setVisibility(View.GONE);
+        // Show the camera preview and buttons
         findViewById(R.id.btnRetake).setVisibility(View.VISIBLE);
         findViewById(R.id.btnSaveFromCamera).setVisibility(View.VISIBLE);
         ImageView imagePreview = findViewById(R.id.imagePreview);
         LinearLayout cameraPreviewButtons = findViewById(R.id.cameraPreviewButtons);
         EditText etCameraImageTitle = findViewById(R.id.etCameraImageTitle);
-
+        // Show the camera preview and buttons
         imagePreview.setImageBitmap(bitmap);
         imagePreview.setVisibility(View.VISIBLE);
         cameraPreviewButtons.setVisibility(View.VISIBLE);
         etCameraImageTitle.setVisibility(View.VISIBLE);
-
+        // Show report page buttons:
         findViewById(R.id.cardUploadImage).setVisibility(View.GONE);
         findViewById(R.id.cardOpenCamera).setVisibility(View.GONE);
         findViewById(R.id.cardAddReport).setVisibility(View.GONE);
+        // Set the bitmap to process
         this.bitmapToProcess = bitmap;
     }
-
+    // Submit lost item report function:
     private void submitLostItemReport() {
         EditText etTitle = findViewById(R.id.etTitle);
         EditText etClientName = findViewById(R.id.etClientName);
         EditText etClientPhone = findViewById(R.id.etClientPhone);
         TextView etLostDate = findViewById(R.id.etLostDate);
-
+        // Get the report data
         String title = etTitle.getText().toString().trim();
         String clientName = etClientName.getText().toString().trim();
         String clientPhone = etClientPhone.getText().toString().trim();
         String lostDateStr = etLostDate.getText().toString().trim();
         String description = getSelectedItemsDescription();
-
+        // Validate the report data
         if (title.isEmpty() || clientName.isEmpty() || clientPhone.isEmpty() || description.isEmpty() || lostDateStr.isEmpty()) {
             View rootView = findViewById(android.R.id.content);
             Snackbar snackbar = Snackbar.make(rootView, "Please fill all fields", Snackbar.LENGTH_SHORT);
             snackbar.show();
             return;
         }
-
-
+        // Convert the date string to a Date object
         Date lostDate;
         try {
             lostDate = sdf.parse(lostDateStr);
@@ -451,24 +479,23 @@ public class MainActivity extends BaseActivity {
                     .setPositiveButton("OK", null)
                     .show();
         }
-
-
+        // Clear the form
         etTitle.setText("");
         etClientName.setText("");
         etClientPhone.setText("");
         etLostDate.setText("");
-
+        // Hide the buttons:
         ScrollView lostItemForm = findViewById(R.id.lostItemForm);
         lostItemForm.setVisibility(View.GONE);
-
+        // Clear and close the form
         clearAllCheckboxes();
         closeAllCategoryScrolls();
-
+        // Show report page buttons:
         findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
         findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
         findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
     }
-
+    // Close all Forms category scrolls
     private void closeAllCategoryScrolls() {
         findViewById(R.id.personalItemsScroll).setVisibility(View.GONE);
         findViewById(R.id.clothingDetailsScroll).setVisibility(View.GONE);
@@ -480,7 +507,7 @@ public class MainActivity extends BaseActivity {
         ((ImageButton) findViewById(R.id.btnToggleTech)).setImageResource(R.drawable.switch_off);
         ((ImageButton) findViewById(R.id.btnToggleOther)).setImageResource(R.drawable.switch_off);
     }
-
+    // A function to get the selected items description
     private String getSelectedItemsDescription() {
         StringBuilder selectedItems = new StringBuilder();
 
@@ -490,29 +517,34 @@ public class MainActivity extends BaseActivity {
                 R.id.otherItemsContainer,
                 R.id.clothingDetailsContainer
         };
-
+        // Iterate through each category container
         for (int containerId : categoryContainerIds) {
             LinearLayout container = findViewById(containerId);
+            // Iterate through each checkbox in the container
             if (container != null) {
                 int childCount = container.getChildCount();
+                // Iterate through each checkbox in the container
                 for (int i = 0; i < childCount; i++) {
                     View child = container.getChildAt(i);
+                    // Check if the child is a checkbox
                     if (child instanceof CheckBox) {
                         CheckBox checkBox = (CheckBox) child;
+                        // Check if the checkbox is checked
                         if (checkBox.isChecked()) {
                             if (selectedItems.length() > 0) {
                                 selectedItems.append(", ");
                             }
+                            // Append the checkbox text to the selected items description
                             selectedItems.append(checkBox.getText().toString());
                         }
                     }
                 }
             }
         }
-
+        // Return the selected items description
         return selectedItems.toString();
     }
-
+    // A function that clears all checkboxes
     private void clearAllCheckboxes() {
         int[] categoryContainerIds = new int[]{
                 R.id.personalItemsContainer,
@@ -520,11 +552,12 @@ public class MainActivity extends BaseActivity {
                 R.id.otherItemsContainer,
                 R.id.clothingDetailsContainer
         };
-
+        // Iterate through each category container
         for (int containerId : categoryContainerIds) {
             LinearLayout container = findViewById(containerId);
             if (container != null) {
                 int childCount = container.getChildCount();
+                // Iterate through each checkbox in the container
                 for (int i = 0; i < childCount; i++) {
                     View child = container.getChildAt(i);
                     if (child instanceof CheckBox) {
@@ -534,7 +567,7 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
+    // A function that toggles the scroll view and icon
     private void toggleScrollAndIcon(View scrollView, ImageButton button, int iconOnResId, int iconOffResId) {
         boolean isVisible = scrollView.getVisibility() == View.VISIBLE;
         if (isVisible) {
@@ -545,13 +578,15 @@ public class MainActivity extends BaseActivity {
             button.setImageResource(iconOnResId);
         }
     }
-
+    // A function that creates the notification channel
     private void createNotificationChannel() {
+        // Create the NotificationChannel
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+        // Configure the channel
         channel.setDescription(CHANNEL_DESC);
         channel.enableLights(true);
         channel.enableVibration(true);
-
+        // Register the channel with the system
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
