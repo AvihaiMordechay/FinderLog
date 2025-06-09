@@ -266,6 +266,10 @@ public class MainActivity extends BaseActivity {
         btnSaveFromCamera.setOnClickListener(v -> {
             // Hide the buttons:
             String imageTitle = etCameraImageTitle.getText().toString().trim();
+            if (imageTitle.isEmpty()) {
+                Toast.makeText(this, "Please enter a title for the image", Toast.LENGTH_SHORT).show();
+                return;
+            }
             cameraHelper.confirmAndUploadImage(imageTitle);
             btnSaveFromCamera.setVisibility(View.GONE);
             cameraPreviewButtons.setVisibility(View.GONE);
@@ -282,6 +286,10 @@ public class MainActivity extends BaseActivity {
         saveImageFromGallery.setOnClickListener(v -> {
             // Hide the buttons:
             String imageTitle = etGalleryImageTitle.getText().toString().trim();
+            if (imageTitle.isEmpty()) {
+                Toast.makeText(this, "Please enter a title for the image", Toast.LENGTH_SHORT).show();
+                return;
+            }
             galleryHelper.confirmAndUploadImage(imageTitle);
             imagePreview.setVisibility(View.GONE);
             imagePreview.setImageDrawable(null);
