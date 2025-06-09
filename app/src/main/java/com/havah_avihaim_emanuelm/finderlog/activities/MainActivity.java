@@ -322,13 +322,7 @@ public class MainActivity extends BaseActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Permission Required")
                 .setMessage("Camera permission was denied permanently. Please enable it manually in settings.")
-                .setPositiveButton("Go to Settings", (dialog, which) -> {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    intent.setData(uri);
-                    startActivity(intent);
-                })
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton("OK", null)
                 .show();
     }
 
