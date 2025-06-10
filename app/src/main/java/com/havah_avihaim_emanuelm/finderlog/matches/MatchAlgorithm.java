@@ -37,12 +37,10 @@ public class MatchAlgorithm {
     private static final String POST_NOTIFICATIONS = "android.permission.POST_NOTIFICATIONS";
     private final Context context;
     private final FirestoreService firestoreService = FirestoreService.getSharedInstance();
-    private Runnable onComplete;
     private String imgTitle;
 
-    public MatchAlgorithm(Context context, Runnable onComplete, String imgTitle) {
+    public MatchAlgorithm(Context context, String imgTitle) {
         this.context = context;
-        this.onComplete = onComplete;
         this.imgTitle = imgTitle;
 
         registerReceiver();
@@ -85,9 +83,6 @@ public class MatchAlgorithm {
                 });
                 Toast.makeText(context, "Image uploaded and processed successfully", Toast.LENGTH_SHORT).show();
 
-                if (onComplete != null) {
-                    onComplete.run();
-                }
 
 
                 // Once done, unregister receiver
@@ -189,10 +184,6 @@ public class MatchAlgorithm {
         }
         if (matchesCount > 0) {
             MatchNotification(matchesCount + " matches found for report " + lostItem.getTitle());
-        }
-        // Optional callback
-        if (onComplete != null) {
-            onComplete.run();
         }
     }
 

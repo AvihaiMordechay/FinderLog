@@ -65,13 +65,15 @@ public class GalleryHelper {
                     .setMessage("Failed to upload image. \nPlease check your internet connection and try again.")
                     .setPositiveButton("OK", null)
                     .show();
+            clearPendingImage();
             return;
         }
         // Upload the image to Firebase Storage
         storageService.uploadFile(pendingImageUri, storagePath -> {
+            clearPendingImage();
             if (storagePath != null) {
                 // Start the Machine Learning service
-                new MatchAlgorithm(context, this::clearPendingImage, imageTitle);
+                new MatchAlgorithm(context, imageTitle);
                 Intent intent = new Intent(context, MachineLearningService.class);
                 // Send the image path to the service
                 intent.setAction(MachineLearningService.ACTION_ANALYZE_IMAGE);

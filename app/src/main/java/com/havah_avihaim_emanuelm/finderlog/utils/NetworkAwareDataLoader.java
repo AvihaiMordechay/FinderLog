@@ -73,26 +73,3 @@ public class NetworkAwareDataLoader {
     }
 
 }
-
-
-//    public static void loadData(Context context, FirestoreService firestoreService, Runnable onComplete) {
-//        if (NetworkAwareDataLoader.isNetworkAvailable(context)) {
-//            if (Repositories.getFoundRepo().needsLoading()) {
-//                firestoreService.getItems(FoundItem.class, Repositories.getFoundRepo()::setItems);
-//            }
-//            if (getLostRepo().needsLoading()) {
-//                firestoreService.getItems(LostItem.class, getLostRepo()::setItems);
-//            }
-//            if (Repositories.getMatchRepo().needsLoading()) {
-//                firestoreService.getAllMatches(Repositories.getMatchRepo()::setMatches);
-//            }
-//        } else {
-//            new AlertDialog.Builder(context)
-//                    .setTitle("No Internet Connection")
-//                    .setMessage("New data could not be loaded.")
-//                    .setPositiveButton("Retry", (dialog, which) -> loadData(context, firestoreService, onComplete))
-//                    .setNegativeButton("Cancel", null)
-//                    .show();
-//        }
-//        onComplete.run();
-//    }

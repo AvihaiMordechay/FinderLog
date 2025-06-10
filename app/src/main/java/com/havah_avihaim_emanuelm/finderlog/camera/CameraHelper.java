@@ -42,6 +42,7 @@ public class CameraHelper {
 
     ProcessCameraProvider cameraProvider;
     private Uri pendingImageUri;
+    private Bitmap bitmap;
 
     public CameraHelper(Context context, PreviewView previewView) {
         this.context = context;
@@ -94,7 +95,7 @@ public class CameraHelper {
                         pendingImageUri = savedUri;
 
                         Log.d("CameraX", "Photo saved: " + savedUri);
-                        Bitmap bitmap = getCorrectlyOrientedBitmap(photoFile.getAbsolutePath());
+                        bitmap = getCorrectlyOrientedBitmap(photoFile.getAbsolutePath());
                         if (bitmap != null) {
                             ((MainActivity) context).showCameraImagePreview(bitmap);
                         } else {
@@ -129,6 +130,7 @@ public class CameraHelper {
     public void confirmAndUploadImage(String imageTitle) {
         if (pendingImageUri == null) {
             Log.e("CameraX", "No photo to upload:");
+            clearPendingImage();
             return;
         }
         // Check for internet connection
@@ -138,12 +140,14 @@ public class CameraHelper {
                     .setMessage("Failed to upload image. \nPlease check your internet connection and try again.")
                     .setPositiveButton("OK", null)
                     .show();
+            clearPendingImage();
             return;
         }
         // Upload the image to Firebase Storage
         storageService.uploadFile(pendingImageUri, storagePath -> {
+            clearPendingImage();
             if (storagePath != null) {
-                new MatchAlgorithm(context, this::clearPendingImage, imageTitle);
+                new MatchAlgorithm(context, imageTitle);
                 // Start the Machine Learning service
                 Intent intent = new Intent(context, MachineLearningService.class);
                 // Send the image path to the service
@@ -152,18 +156,6 @@ public class CameraHelper {
                 intent.putExtra(MachineLearningService.EXTRA_IMAGE_URI, storagePath);
                 // Start the service
                 context.startService(intent);
-                // Delete the photo file after upload
-                String path = pendingImageUri.getPath();
-                if(path!=null)
-                {
-                    File file = new File(pendingImageUri.getPath());
-                    boolean deleted = file.delete();
-                    if (deleted) {
-                        Log.d("CameraX", "Photo file deleted after upload: " + file.getAbsolutePath());
-                    } else {
-                        Log.e("CameraX", "Failed to delete photo file: " + file.getAbsolutePath());
-                    }
-                }
             } else {
                 Log.e("CameraX", "Upload failed:");
             }
@@ -179,7 +171,18 @@ public class CameraHelper {
     }
     // A function to clear the pending image URI
     public void clearPendingImage() {
-        pendingImageUri = null;
+        if(pendingImageUri.getPath()!=null) {
+            File file = new File(pendingImageUri.getPath());
+            boolean deleted = file.delete();
+            if (deleted) {
+                Log.d("CameraX", "Photo file deleted after upload: " + file.getAbsolutePath());
+            } else {
+                Log.e("CameraX", "Failed to delete photo file: " + file.getAbsolutePath());
+            }
+            pendingImageUri = null;
+        }
+        bitmap.recycle();
+        bitmap = null;
     }
     // A function to get the correctly oriented bitmap from the image path
     private Bitmap getCorrectlyOrientedBitmap(String imagePath) {
@@ -205,7 +208,9 @@ public class CameraHelper {
                     return bitmap;
             }
             // Return the rotated bitmap
-            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            Bitmap rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return rotated;
         } catch (Exception e) {
             Log.e("ImageUtils", "Failed to rotate image from path: " + imagePath, e);
             return bitmap;

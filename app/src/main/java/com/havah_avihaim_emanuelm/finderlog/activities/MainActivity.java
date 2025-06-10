@@ -66,7 +66,6 @@ public class MainActivity extends BaseActivity {
     private CameraHelper cameraHelper;
     private PreviewView previewView;
     private GalleryHelper galleryHelper;
-    private Bitmap bitmapToProcess;
     private SimpleDateFormat sdf;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{
             Manifest.permission.CAMERA
@@ -253,9 +252,8 @@ public class MainActivity extends BaseActivity {
             imagePreview.setImageDrawable(null);
             etCameraImageTitle.setVisibility(View.GONE);
             etCameraImageTitle.setText("");
-            this.bitmapToProcess.recycle(); // deletes the bitmap from memory
+            //clear all image instances
             cameraHelper.clearPendingImage();
-            this.bitmapToProcess = null;
             cameraPreviewButtons.setVisibility(View.GONE);
             cameraHelper.startCamera();
             previewView.setVisibility(View.VISIBLE);
@@ -280,7 +278,6 @@ public class MainActivity extends BaseActivity {
             findViewById(R.id.cardUploadImage).setVisibility(View.VISIBLE);
             findViewById(R.id.cardOpenCamera).setVisibility(View.VISIBLE);
             findViewById(R.id.cardAddReport).setVisibility(View.VISIBLE);
-            bitmapToProcess = null;
         });
         //
         saveImageFromGallery.setOnClickListener(v -> {
@@ -437,8 +434,6 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.cardUploadImage).setVisibility(View.GONE);
         findViewById(R.id.cardOpenCamera).setVisibility(View.GONE);
         findViewById(R.id.cardAddReport).setVisibility(View.GONE);
-        // Set the bitmap to process
-        this.bitmapToProcess = bitmap;
     }
     // Submit lost item report function:
     private void submitLostItemReport() {

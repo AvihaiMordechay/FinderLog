@@ -26,15 +26,13 @@ public class LostActivity extends BaseActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewLost);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        NetworkAwareDataLoader.loadData(this, firestoreService, () -> {
-            runOnUiThread(() -> {
-                ItemRepository lostRepo = Repositories.getLostRepo();
-                updateEmptyState(recyclerView, lostRepo.getSize()==0);
-                ItemAdapter adapter = new ItemAdapter(lostRepo,
-                        () -> updateEmptyState(recyclerView,lostRepo.getSize()==0),true);
-                recyclerView.setAdapter(adapter);
-            });
-        });
+        NetworkAwareDataLoader.loadData(this, firestoreService, () -> runOnUiThread(() -> {
+            ItemRepository lostRepo = Repositories.getLostRepo();
+            updateEmptyState(recyclerView, lostRepo.getSize()==0);
+            ItemAdapter adapter = new ItemAdapter(lostRepo,
+                    () -> updateEmptyState(recyclerView,lostRepo.getSize()==0),true);
+            recyclerView.setAdapter(adapter);
+        }));
     }
 
 }

@@ -26,16 +26,14 @@ public class FoundActivity extends BaseActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewFound);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        NetworkAwareDataLoader.loadData(this, firestoreService, () -> {
-            runOnUiThread(() -> {
-                ItemRepository foundRepo = Repositories.getFoundRepo();
-                updateEmptyState(recyclerView, foundRepo.getSize() == 0);
-                ItemAdapter adapter = new ItemAdapter(foundRepo,
-                        () -> updateEmptyState(recyclerView, foundRepo.getSize() == 0),
-                        true);
-                recyclerView.setAdapter(adapter);
-            });
-        });
+        NetworkAwareDataLoader.loadData(this, firestoreService, () -> runOnUiThread(() -> {
+            ItemRepository foundRepo = Repositories.getFoundRepo();
+            updateEmptyState(recyclerView, foundRepo.getSize() == 0);
+            ItemAdapter adapter = new ItemAdapter(foundRepo,
+                    () -> updateEmptyState(recyclerView, foundRepo.getSize() == 0),
+                    true);
+            recyclerView.setAdapter(adapter);
+        }));
 
     }
 
