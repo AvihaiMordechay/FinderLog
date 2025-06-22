@@ -39,10 +39,14 @@ public class MatchRepository {
 
     // Removes a LostItem from all matches in which it appears.
     public void removeLostItem(Item lostItem) {
+        List<Match> toRemove = new ArrayList<>();
         for (Match match : matches) {
             match.deleteLostItem(lostItem);
+            if (match.getLostItems().isEmpty()) {
+                toRemove.add(match);
+            }
         }
-
+        matches.removeAll(toRemove);
     }
 
     // Returns the full list of matches.

@@ -154,9 +154,17 @@ public class FirestoreService {
                             }
 
                             if (found) {
-                                matchRef.update("lostItems", updatedItems)
-                                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "LostItem removed from match " + doc.getId()))
-                                        .addOnFailureListener(e -> Log.e("Firestore", "Error removing lostItem from match", e));
+                                if (updatedItems.isEmpty()) {
+                                    // Delete the entire match document if no lostItems left
+                                    matchRef.delete()
+                                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Match deleted: " + doc.getId()))
+                                            .addOnFailureListener(e -> Log.e("Firestore", "Error deleting match", e));
+                                } else {
+                                    // Just update the lostItems field
+                                    matchRef.update("lostItems", updatedItems)
+                                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "LostItem removed from match " + doc.getId()))
+                                            .addOnFailureListener(e -> Log.e("Firestore", "Error removing lostItem from match", e));
+                                }
                             }
                         }
                     }
