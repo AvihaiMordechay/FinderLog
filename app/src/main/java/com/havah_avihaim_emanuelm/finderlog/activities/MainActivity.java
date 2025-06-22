@@ -366,7 +366,7 @@ public class MainActivity extends BaseActivity {
                 "Hava Haviv\n" +
                 "Emanuel Malloul\n" +
                 "Avihai Mordechay\n\n" +
-                "Submission Date: May 21, 2025";
+                "Submission Date: 29.06.2025";
 
         builder.setMessage(message);
         builder.setPositiveButton("OK", null);
