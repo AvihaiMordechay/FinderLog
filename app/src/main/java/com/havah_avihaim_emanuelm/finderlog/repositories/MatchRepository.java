@@ -1,10 +1,10 @@
 package com.havah_avihaim_emanuelm.finderlog.repositories;
 
-import com.havah_avihaim_emanuelm.finderlog.items.Item;
 import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
 import com.havah_avihaim_emanuelm.finderlog.matches.Match;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MatchRepository {
@@ -38,15 +38,15 @@ public class MatchRepository {
     }
 
     // Removes a LostItem from all matches in which it appears.
-    public void removeLostItem(Item lostItem) {
-        List<Match> toRemove = new ArrayList<>();
-        for (Match match : matches) {
+    public void removeLostItem(LostItem lostItem) {
+        Iterator<Match> iterator = matches.iterator();
+        while (iterator.hasNext()) {
+            Match match = iterator.next();
             match.deleteLostItem(lostItem);
             if (match.getLostItems().isEmpty()) {
-                toRemove.add(match);
+                iterator.remove();
             }
         }
-        matches.removeAll(toRemove);
     }
 
     // Returns the full list of matches.

@@ -1,8 +1,8 @@
 package com.havah_avihaim_emanuelm.finderlog.matches;
 
-import com.havah_avihaim_emanuelm.finderlog.items.Item;
 import com.havah_avihaim_emanuelm.finderlog.items.LostItem;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class Match {
@@ -24,9 +24,16 @@ public class Match {
         this.id = id;
     }
 
-    public void deleteLostItem(Item item) {
-        if (item instanceof LostItem) {
-            lostItems.remove((LostItem) item);
+    public void deleteLostItem(LostItem lostItem) {
+        if (lostItem == null || lostItem.getId() == null) return;
+
+        Iterator<LostItem> iterator = lostItems.iterator();
+        while (iterator.hasNext()) {
+            LostItem item = iterator.next();
+            if (lostItem.getId().equals(item.getId())) {
+                iterator.remove();
+                break;
+            }
         }
     }
 

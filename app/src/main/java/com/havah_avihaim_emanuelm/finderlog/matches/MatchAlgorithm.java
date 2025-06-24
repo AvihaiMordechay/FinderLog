@@ -79,11 +79,9 @@ public class MatchAlgorithm {
                 firestoreService.addItem(foundItem, item -> {
                     getFoundRepo().addItem(item);
                     if (labels == null) return;
+                    Toast.makeText(context, "Image uploaded and processed successfully", Toast.LENGTH_SHORT).show();
                     new Thread(() -> startMatchingThread(convertToList(labels), imageUri)).start();
                 });
-                Toast.makeText(context, "Image uploaded and processed successfully", Toast.LENGTH_SHORT).show();
-
-
 
                 // Once done, unregister receiver
                 context.unregisterReceiver(this);
@@ -131,7 +129,11 @@ public class MatchAlgorithm {
     // Starts matching process for new lost item reports against existing found items
     // Searches through found items to find matches with the new lost item report
     public void startMatchingThread(List<String> labels, LostItem lostItem) {
+        Log.d("startMatchingThread", "start startMatchingThread.");
+
         List<Item> foundItems = getFoundRepo().getCachedItems();
+        Log.d("DEBUG", "Found items: " + foundItems.size());
+
         List<Match> matches = getMatchRepo().getMatches();
         int matchesCount = 0;
 

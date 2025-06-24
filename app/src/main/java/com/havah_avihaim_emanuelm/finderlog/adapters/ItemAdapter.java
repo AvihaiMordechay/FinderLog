@@ -102,11 +102,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                     deleteButton.setVisibility(View.VISIBLE);
                     deleteButton.setOnClickListener(v -> {
                         if (NetworkAwareDataLoader.isNetworkAvailable(v.getContext())) {
-                            repository.removeItemAt(position); // remove item from lostItem
-                            adapter.notifyItemRemoved(position);
                             firestoreService.deleteLostItemFromMatches(lostItem); //remove item from match in db
                             firestoreService.deleteItem(LostItem.class, lostItem.getId()); //remove item from lost in db
                             getMatchRepo().removeLostItem(lostItem);
+                            repository.removeItemAt(position); // remove item from lostItem
+                            adapter.notifyItemRemoved(position);
                             if (repository.getSize() == 0 && listChangedListener != null) {
                                 listChangedListener.onListChanged();
                             }

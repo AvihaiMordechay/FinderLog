@@ -17,12 +17,14 @@ public class ItemRepository {
     // Sets the cached items list, sorted by report date (newest first), and marks loading as complete.
     public void setItems(List<? extends Item> items) {
         cachedItems.clear();
-        items.sort((item1, item2) -> {
-            Date date1 = item1.getReportDate();
-            Date date2 = item2.getReportDate();
-            return date2.compareTo(date1);
-        });
-        cachedItems.addAll(items);
+        if(items != null) {
+            items.sort((item1, item2) -> {
+                Date date1 = item1.getReportDate();
+                Date date2 = item2.getReportDate();
+                return date2.compareTo(date1);
+            });
+            cachedItems.addAll(items);
+        }
         needsLoading = false;
     }
 

@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.content.pm.PackageManager;
@@ -128,7 +129,8 @@ public class MainActivity extends BaseActivity {
         // date picker:
         TextView tvLostDate = findViewById(R.id.etLostDate);
         String today = sdf.format(new Date());
-        tvLostDate.setText(today);
+        tvLostDate.post(() -> tvLostDate.setText(today));
+
         tvLostDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
@@ -467,12 +469,13 @@ public class MainActivity extends BaseActivity {
             firestoreService.addItem(lostItem, item -> {
                 getLostRepo().addItem(item);
                 MatchAlgorithm matchAlgorithm = new MatchAlgorithm(this);
+                // Show popup message
+                View rootView = findViewById(android.R.id.content);
+                Snackbar snackbar = Snackbar.make(rootView, "Report submitted!", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+                Log.d("submitLostItemReport", "before startMatchingThread.");
                 new Thread(() -> matchAlgorithm.startMatchingThread(matchAlgorithm.convertToList(description), lostItem)).start();
             });
-            // Show popup message
-            View rootView = findViewById(android.R.id.content);
-            Snackbar snackbar = Snackbar.make(rootView, "Report submitted!", Snackbar.LENGTH_SHORT);
-            snackbar.show();
         } else {
             new AlertDialog.Builder(this)
                     .setTitle("No internet connection")
